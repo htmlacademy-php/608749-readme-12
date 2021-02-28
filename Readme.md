@@ -1,7 +1,7 @@
 # Личный проект «Readme»
 
 * Студент: [Тина Кузьменко](https://up.htmlacademy.ru/php/12/user/608749).
-* Наставник: `Неизвестно`.
+* Наставник: [Антон Попов](https://htmlacademy.ru/profile/joker).
 
 ---
 
