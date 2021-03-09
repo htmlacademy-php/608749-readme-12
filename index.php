@@ -107,7 +107,7 @@ $posts = [
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <?= $user_name ?>
+                                    <?= $user_name; ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
@@ -244,13 +244,13 @@ $posts = [
             <?php foreach ($posts as $post): ?>
             <article class="popular__post post <?=$post['type'] ?>">
                 <header class="post__header">
-                    <h2><?=$post['heading'] ?></h2>
+                    <h2><?= $post['heading']; ?></h2>
                 </header>
                 <div class="post__main">
                     <?php if($post['type'] === 'post-quote'): ?>
                     <blockquote>
                         <p>
-                            <?=$post['content'] ?>
+                            <?= $post['content']; ?>
                         </p>
                         <cite>Неизвестный Автор</cite>
                     </blockquote>
@@ -263,16 +263,16 @@ $posts = [
                                     <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                                 </div>
                                 <div class="post-link__info">
-                                    <h3><?=$post['heading'] ?></h3>
+                                    <h3><?= $post['heading']; ?></h3>
                                 </div>
                             </div>
-                            <span><?=$post['content'] ?></span>
+                            <span><?= $post['content']; ?></span>
                         </a>
                     </div>
 
                     <?php elseif($post['type'] === 'post-photo'): ?>
                     <div class="post-photo__image-wrapper">
-                        <img src="img/<?=$post['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+                        <img src="img/<?= $post['content']; ?>" alt="Фото от пользователя" width="360" height="240">
                     </div>
 
                     <?php elseif($post['type'] === 'post-video'): ?>
@@ -290,7 +290,7 @@ $posts = [
                     </div>
 
                     <?php elseif($post['type'] === 'post-text'): ?>
-                    <p><?=$post['content'] ?></p>
+                    <p><?= $post['content']; ?></p>
                     <?php endif; ?>
                 </div>
                 <footer class="post__footer">
