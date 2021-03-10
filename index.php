@@ -1,13 +1,25 @@
 <?php
+
+require_once 'user-functions.php';
+
 $is_auth = rand(0, 1);
 
-$user_name = 'Тина Кузьменко'; // укажите здесь ваше имя
+$user_name = 'Тина Кузьменко';
 
 $posts = [
   [
       'heading' => 'Цитата',
       'type' => 'post-quote',
       'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
+      'username' => 'Лариса',
+      'avatar' => 'userpic-larisa-small.jpg'
+  ],
+  [
+      'heading' => 'Полезный пост про Байкал',
+      'type' => 'post-text',
+      'content' => 'Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
+      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
+      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное',
       'username' => 'Лариса',
       'avatar' => 'userpic-larisa-small.jpg'
   ],
@@ -40,6 +52,7 @@ $posts = [
       'avatar' => 'userpic.jpg'
   ],
 ];
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -257,7 +270,7 @@ $posts = [
 
                     <?php elseif($post['type'] === 'post-link'): ?>
                     <div class="post-link__wrapper">
-                        <a class="post-link__external" href="http://<?=$post['content'] ?>" title="Перейти по ссылке">
+                        <a class="post-link__external" href="http://<?= $post['content']; ?>" title="Перейти по ссылке">
                             <div class="post-link__info-wrapper">
                                 <div class="post-link__icon-wrapper">
                                     <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
@@ -290,17 +303,20 @@ $posts = [
                     </div>
 
                     <?php elseif($post['type'] === 'post-text'): ?>
-                    <p><?= $post['content']; ?></p>
+                    <p><?= cut_string($post['content']); ?></p>
+                        <?php if (mb_strlen($post['content']) > 300):  ?>
+                        <a class="post-text__more-link" href="#">Читать далее</a>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
                         <a class="post__author-link" href="#" title="Автор">
                             <div class="post__avatar-wrapper">
-                                <img class="post__author-avatar" src="img/<?=$post['avatar'] ?>" alt="Аватар пользователя">
+                                <img class="post__author-avatar" src="img/<?= $post['avatar']; ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><?=$post['username'] ?></b>
+                                <b class="post__author-name"><?= $post['username']; ?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
