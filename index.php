@@ -1,13 +1,25 @@
 <?php
+
+require_once 'user-functions.php';
+
 $is_auth = rand(0, 1);
 
-$user_name = 'Тина Кузьменко'; // укажите здесь ваше имя
+$user_name = 'Тина Кузьменко';
 
 $posts = [
   [
       'heading' => 'Цитата',
       'type' => 'post-quote',
       'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
+      'username' => 'Лариса',
+      'avatar' => 'userpic-larisa-small.jpg'
+  ],
+  [
+      'heading' => 'Полезный пост про Байкал',
+      'type' => 'post-text',
+      'content' => 'Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
+      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
+      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное',
       'username' => 'Лариса',
       'avatar' => 'userpic-larisa-small.jpg'
   ],
@@ -40,6 +52,7 @@ $posts = [
       'avatar' => 'userpic.jpg'
   ],
 ];
+
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -107,7 +120,7 @@ $posts = [
                             </div>
                             <div class="header__profile-name">
                                 <span>
-                                    <?= $user_name ?>
+                                    <?= $user_name; ?>
                                 </span>
                                 <svg class="header__link-arrow" width="10" height="6">
                                     <use xlink:href="#icon-arrow-right-ad"></use>
@@ -244,35 +257,35 @@ $posts = [
             <?php foreach ($posts as $post): ?>
             <article class="popular__post post <?=$post['type'] ?>">
                 <header class="post__header">
-                    <h2><?=$post['heading'] ?></h2>
+                    <h2><?= $post['heading']; ?></h2>
                 </header>
                 <div class="post__main">
                     <?php if($post['type'] === 'post-quote'): ?>
                     <blockquote>
                         <p>
-                            <?=$post['content'] ?>
+                            <?= $post['content']; ?>
                         </p>
                         <cite>Неизвестный Автор</cite>
                     </blockquote>
 
                     <?php elseif($post['type'] === 'post-link'): ?>
                     <div class="post-link__wrapper">
-                        <a class="post-link__external" href="http://<?=$post['content'] ?>" title="Перейти по ссылке">
+                        <a class="post-link__external" href="http://<?= $post['content']; ?>" title="Перейти по ссылке">
                             <div class="post-link__info-wrapper">
                                 <div class="post-link__icon-wrapper">
                                     <img src="https://www.google.com/s2/favicons?domain=vitadental.ru" alt="Иконка">
                                 </div>
                                 <div class="post-link__info">
-                                    <h3><?=$post['heading'] ?></h3>
+                                    <h3><?= $post['heading']; ?></h3>
                                 </div>
                             </div>
-                            <span><?=$post['content'] ?></span>
+                            <span><?= $post['content']; ?></span>
                         </a>
                     </div>
 
                     <?php elseif($post['type'] === 'post-photo'): ?>
                     <div class="post-photo__image-wrapper">
-                        <img src="img/<?=$post['content'] ?>" alt="Фото от пользователя" width="360" height="240">
+                        <img src="img/<?= $post['content']; ?>" alt="Фото от пользователя" width="360" height="240">
                     </div>
 
                     <?php elseif($post['type'] === 'post-video'): ?>
@@ -290,17 +303,20 @@ $posts = [
                     </div>
 
                     <?php elseif($post['type'] === 'post-text'): ?>
-                    <p><?=$post['content'] ?></p>
+                    <p><?= cut_string($post['content']); ?></p>
+                        <?php if (mb_strlen($post['content']) > 300):  ?>
+                        <a class="post-text__more-link" href="#">Читать далее</a>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
                 <footer class="post__footer">
                     <div class="post__author">
                         <a class="post__author-link" href="#" title="Автор">
                             <div class="post__avatar-wrapper">
-                                <img class="post__author-avatar" src="img/<?=$post['avatar'] ?>" alt="Аватар пользователя">
+                                <img class="post__author-avatar" src="img/<?= $post['avatar']; ?>" alt="Аватар пользователя">
                             </div>
                             <div class="post__info">
-                                <b class="post__author-name"><?=$post['username'] ?></b>
+                                <b class="post__author-name"><?= $post['username']; ?></b>
                                 <time class="post__time" datetime="">дата</time>
                             </div>
                         </a>
