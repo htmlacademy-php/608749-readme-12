@@ -304,9 +304,7 @@ $posts = [
 
                     <?php elseif($post['type'] === 'post-text'): ?>
                     <p><?= cut_string($post['content']); ?></p>
-                        <?php if (mb_strlen($post['content']) > 300):  ?>
-                        <a class="post-text__more-link" href="#">Читать далее</a>
-                        <?php endif; ?>
+                    <?= add_link($post['content']); ?>
                     <?php endif; ?>
                 </div>
                 <footer class="post__footer">
