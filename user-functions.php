@@ -28,16 +28,20 @@ function cut_string(string $string, int $max_length = 300): string {
 }
 
 /**
- * Функция, которая проверяет текст: если его длина больше заданного числа, она возвращает ссылку
- * для перехода на полную версию текста.
+ * Функция, которая генерирует разметку текстового поста. И, в зависимости от его длины,
+ * обрезает текст и добавляет к нему ссылку на полный пост.
  * @param string $content
+ * @param string $link
  * @param int $max_length
  * @return string
  */
-function add_link(string $content, int $max_length = 300): string {
-    if (mb_strlen($content) < $max_length) {
-        return '';
-    }
+function create_text_post(string $content, string $link = '#', int $max_length = 300): string {
 
-    return '<a class="post-text__more-link" href="#">Читать далее</a>';
+    $result = '<p>' . cut_string($content, $max_length) . '</p>';
+
+    if (mb_strlen($content) > $max_length) {
+        $result .= '<a class="post-text__more-link" href="' . $link . '">Читать далее</a>';
+    };
+
+    return $result;
 }
