@@ -56,30 +56,33 @@ function create_text_post(string $content, string $link = '#', int $max_length =
  */
 function humanize_date(string $date) {
 
-    $current = strtotime('now');
-    $post_date = strtotime($date);
-    $diff = $current - $post_date;
+    $current = date_create();
+    $post_date = date_create($date);
+    $diff = date_diff($post_date, $current);
 
-    switch ($diff) {
-        case ($diff < 3600):
-            $time = ceil($diff / 60);
-            print("${time} минуты назад");
+    $minutes = ceil($diff->i);
+    $hours = ceil($diff->h);
+    $days = ceil($diff->d);
+    $weeks = ceil($days / 7);
+    $months = ceil($diff->m);
+
+    switch (true) {
+        case ($months):
+            print("${months} " . get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев') . " назад");
             break;
-        case ($diff >= 3600 and $diff < 86400):
-            $time = ceil($diff / 3600);
-            print("${time} часов назад");
+        case ($days > 7):
+            print("${weeks} " . get_noun_plural_form($weeks, 'неделя', 'недели', 'недель') . " назад");
             break;
-        case ($diff >= 86400 and $diff < 604800):
-            $time = ceil($diff / 86400);
-            print("${time} дней назад");
+        case ($days):
+            print("${days} " . get_noun_plural_form($days, 'день', 'дня', 'дней') . " назад");
             break;
-        case ($diff >= 604800 and $diff < 3024000):
-            $time = ceil($diff / 604800);
-            print("${time} недель назад");
+        case ($hours):
+            print("${hours} " . get_noun_plural_form($hours, 'час', 'часа', 'часов') . " назад");
             break;
-        case ($diff > 3024000):
-            $time = ceil($diff / 3024000);
-            print("${time} месяцев назад");
+        case ($minutes):
+            print("${minutes} " . get_noun_plural_form($minutes, 'минута', 'минуты', 'минут') . " назад");
             break;
+        default:
+            print("Недавно");
     }
 }
