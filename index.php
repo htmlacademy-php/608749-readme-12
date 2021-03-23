@@ -3,6 +3,8 @@
 require_once 'user-functions.php';
 require_once 'helpers.php';
 
+date_default_timezone_set('America/Los_Angeles');
+
 $is_auth = rand(0, 1);
 
 $user_name = 'Тина Кузьменко';
