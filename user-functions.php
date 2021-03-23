@@ -69,19 +69,19 @@ function humanize_date(string $date) {
     switch (true) {
         case ($months):
             print("${months} " . get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев') . " назад");
-            break;
+            return;
         case ($days > 7):
             print("${weeks} " . get_noun_plural_form($weeks, 'неделя', 'недели', 'недель') . " назад");
-            break;
+            return;
         case ($days):
             print("${days} " . get_noun_plural_form($days, 'день', 'дня', 'дней') . " назад");
-            break;
+            return;
         case ($hours):
             print("${hours} " . get_noun_plural_form($hours, 'час', 'часа', 'часов') . " назад");
-            break;
+            return;
         case ($minutes):
             print("${minutes} " . get_noun_plural_form($minutes, 'минута', 'минуты', 'минут') . " назад");
-            break;
+            return;
         default:
             print("Недавно");
     }
