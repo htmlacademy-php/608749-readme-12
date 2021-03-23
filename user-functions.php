@@ -53,8 +53,9 @@ function create_text_post(string $content, string $link = '#', int $max_length =
  * Функция, которая форматирует дату в относительный ("человеческий") формат в виде прошедших с данного моменты
  * минут, часов, дней, недель или месяцев.
  * @param string $date
+ * @return void
  */
-function humanize_date(string $date) {
+function humanize_date(string $date): void {
 
     $current = date_create();
     $post_date = date_create($date);
