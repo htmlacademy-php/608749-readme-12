@@ -153,7 +153,7 @@
                                         class="post__time"
                                         title="<?= date('d.m.Y H:i', strtotime($post_date)); ?>"
                                         datetime="<?= $post_date; ?>">
-                                        <?= $post_date; ?>
+                                        <?= humanize_date($post_date); ?>
                                     </time>
                                 </div>
                             </a>
