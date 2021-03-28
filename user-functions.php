@@ -53,9 +53,10 @@ function create_text_post(string $content, string $link = '#', int $max_length =
  * Функция, которая форматирует дату в относительный ("человеческий") формат в виде прошедших с данного моменты
  * минут, часов, дней, недель или месяцев.
  * @param string $date
- * @return void
+ * @return string
  */
-function humanize_date(string $date): void {
+function humanize_date(string $date): string
+{
 
     $current = date_create();
     $post_date = date_create($date);
@@ -69,21 +70,16 @@ function humanize_date(string $date): void {
 
     switch (true) {
         case ($months):
-            print("${months} " . get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев') . " назад");
-            return;
-        case ($days > 7):
-            print("${weeks} " . get_noun_plural_form($weeks, 'неделя', 'недели', 'недель') . " назад");
-            return;
+            return "$months " . get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев') . " назад";
+        case ($days >= 7):
+            return "$weeks " . get_noun_plural_form($weeks, 'неделя', 'недели', 'недель') . " назад";
         case ($days):
-            print("${days} " . get_noun_plural_form($days, 'день', 'дня', 'дней') . " назад");
-            return;
+            return "$days " . get_noun_plural_form($days, 'день', 'дня', 'дней') . " назад";
         case ($hours):
-            print("${hours} " . get_noun_plural_form($hours, 'час', 'часа', 'часов') . " назад");
-            return;
+            return "$hours " . get_noun_plural_form($hours, 'час', 'часа', 'часов') . " назад";
         case ($minutes):
-            print("${minutes} " . get_noun_plural_form($minutes, 'минута', 'минуты', 'минут') . " назад");
-            return;
+            return "$minutes " . get_noun_plural_form($minutes, 'минута', 'минуты', 'минут') . " назад";
         default:
-            print("Недавно");
+            return "Недавно";
     }
 }
