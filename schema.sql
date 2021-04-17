@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS readme;
+
 CREATE DATABASE readme
     DEFAULT CHARACTER SET utf8
     DEFAULT COLLATE utf8_general_ci;
@@ -10,20 +12,20 @@ CREATE TABLE user
     registration TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     email        VARCHAR(128) NOT NULL UNIQUE,
     login        VARCHAR(128) NOT NULL UNIQUE,
-    password     CHAR(64)     NOT NULL,
-    avatar       TEXT
+    password     VARCHAR(64)     NOT NULL,
+    avatar       VARCHAR(256)
 );
 
 CREATE TABLE post
 (
     id              INT AUTO_INCREMENT PRIMARY KEY,
     date            TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    title           TEXT NOT NULL,
+    title           VARCHAR(256) NOT NULL,
     content         TEXT,
     cite_author     VARCHAR(128),
-    picture         TEXT,
-    video           TEXT,
-    link            TEXT,
+    picture         VARCHAR(256),
+    video           VARCHAR(256),
+    link            VARCHAR(256),
     views           INT,
     user_id         INT  NOT NULL,
     content_type_id INT
@@ -74,6 +76,6 @@ CREATE TABLE hashtag
 CREATE TABLE content_type
 (
     id   INT AUTO_INCREMENT PRIMARY KEY,
-    type CHAR NOT NULL UNIQUE,
-    icon CHAR
+    type VARCHAR(32) NOT NULL UNIQUE,
+    icon VARCHAR(32)
 );
