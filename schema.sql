@@ -23,9 +23,6 @@ CREATE TABLE post
     title           VARCHAR(256) NOT NULL,
     content         TEXT,
     cite_author     VARCHAR(128),
-    picture         VARCHAR(256),
-    video           VARCHAR(256),
-    link            VARCHAR(256),
     views           INT,
     user_id         INT  NOT NULL,
     content_type_id INT
