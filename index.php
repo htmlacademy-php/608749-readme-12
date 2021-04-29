@@ -1,7 +1,32 @@
 <?php
 
+require_once 'init.php';
 require_once 'user-functions.php';
 require_once 'helpers.php';
+
+if (!$link) {
+    $error = mysqli_connect_error();
+    $main = include_template('error.php', ['error' => $error]);
+} else {
+    $sql_content_types = 'SELECT type, icon FROM content_type';
+    $result_content_types = mysqli_query($link, $sql_content_types);
+
+    $sql_popular_posts =
+        'SELECT p.id, date, title, content, cite_author, views, login, icon, avatar
+        FROM post p
+        JOIN user u ON p.user_id = u.id
+        JOIN content_type ct ON p.content_type_id = ct.id
+        ORDER BY views DESC LIMIT 6';
+    $result_popular_posts = mysqli_query($link, $sql_popular_posts);
+
+    $content_types = mysqli_fetch_all($result_content_types, MYSQLI_ASSOC);
+    $popular_posts = mysqli_fetch_all($result_popular_posts, MYSQLI_ASSOC);
+
+    if (!$result_content_types || !$result_popular_posts) {
+        $error = mysqli_error($link);
+        $main = include_template('error.php', ['error' => $error]);
+    }
+}
 
 $is_auth = rand(0, 1);
 
@@ -9,55 +34,9 @@ $user_name = 'Тина Кузьменко';
 
 $title = 'readme: популярное';
 
-$posts = [
-  [
-      'heading' => 'Цитата',
-      'type' => 'post-quote',
-      'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
-      'username' => 'Лариса',
-      'avatar' => 'userpic-larisa-small.jpg'
-  ],
-  [
-      'heading' => 'Полезный пост про Байкал',
-      'type' => 'post-text',
-      'content' => 'Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
-      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
-      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное',
-      'username' => 'Лариса',
-      'avatar' => 'userpic-larisa-small.jpg'
-  ],
-  [
-      'heading' => 'Игра престолов',
-      'type' => 'post-text',
-      'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!',
-      'username' => 'Владик',
-      'avatar' => 'userpic.jpg'
-  ],
-  [
-      'heading' => 'Наконец, обработал фотки!',
-      'type' => 'post-photo',
-      'content' => 'rock-medium.jpg',
-      'username' => 'Виктор',
-      'avatar' => 'userpic-mark.jpg'
-  ],
-  [
-      'heading' => 'Моя мечта',
-      'type' => 'post-photo',
-      'content' => 'coast-medium.jpg',
-      'username' => 'Лариса',
-      'avatar' => 'userpic-larisa-small.jpg'
-  ],
-  [
-      'heading' => 'Лучшие курсы',
-      'type' => 'post-link',
-      'content' => 'www.htmlacademy.ru',
-      'username' => 'Владик',
-      'avatar' => 'userpic.jpg'
-  ],
-];
-
 $main = include_template('main.php', [
-    'posts' => $posts,
+    'posts' => $result_popular_posts,
+    'content_types' => $result_content_types,
 ]);
 
 $layout = include_template('layout.php', [

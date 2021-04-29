@@ -1,10 +1,10 @@
 # список типов контента для поста;
 INSERT INTO content_type (type, icon)
-VALUES ('text', 'text'),
-       ('quote', 'quote'),
-       ('video', 'video'),
-       ('photo', 'photo'),
-       ('link', 'link');
+VALUES ('Текст', 'text'),
+       ('Цитата', 'quote'),
+       ('Видео', 'video'),
+       ('Картинка', 'photo'),
+       ('Ссылка', 'link');
 
 # список пользователей;
 INSERT INTO user (email, login, password, avatar)
