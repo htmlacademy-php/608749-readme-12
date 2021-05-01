@@ -42,8 +42,8 @@
                         </a>
                     </li>
                     <?php foreach ($content_types as $content_type):
-                        $label = $content_type['label'];
-                        $type = $content_type['type'];
+                        $label = $content_type['type'];
+                        $type = $content_type['icon'];
                     ?>
                     <li class="popular__filters-item filters__item">
                         <a class="filters__button filters__button--<?= $type; ?> button" href="#">
@@ -63,12 +63,12 @@
                 $post_content = htmlspecialchars($post['content']);
                 $post_date = generate_random_date($index);
             ?>
-                <article class="popular__post post <?=$post['type'] ?>">
+                <article class="popular__post post post-<?=$post['icon'] ?>">
                     <header class="post__header">
                         <h2><?= $post_title; ?></h2>
                     </header>
                     <div class="post__main">
-                        <?php if($post['type'] === 'quote'): ?>
+                        <?php if($post['icon'] === 'quote'): ?>
                             <blockquote>
                                 <p>
                                     <?= $post_content; ?>
@@ -76,7 +76,7 @@
                                 <cite>Неизвестный Автор</cite>
                             </blockquote>
 
-                        <?php elseif($post['type'] === 'link'): ?>
+                        <?php elseif($post['icon'] === 'link'): ?>
                             <div class="post-link__wrapper">
                                 <a class="post-link__external" href="http://<?= $post_content; ?>" title="Перейти по ссылке">
                                     <div class="post-link__info-wrapper">
@@ -91,12 +91,12 @@
                                 </a>
                             </div>
 
-                        <?php elseif($post['type'] === 'photo'): ?>
+                        <?php elseif($post['icon'] === 'photo'): ?>
                             <div class="post-photo__image-wrapper">
                                 <img src="img/<?= $post_content; ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
-                        <?php elseif($post['type'] === 'video'): ?>
+                        <?php elseif($post['icon'] === 'video'): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
                                     <?=embed_youtube_cover(/* вставьте ссылку на видео */); ?>
@@ -110,7 +110,7 @@
                                 </a>
                             </div>
 
-                        <?php elseif($post['type'] === 'text'): ?>
+                        <?php elseif($post['icon'] === 'text'): ?>
                             <?= create_text_post($post_content); ?>
                         <?php endif; ?>
                     </div>

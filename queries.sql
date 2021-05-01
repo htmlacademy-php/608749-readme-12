@@ -1,3 +1,5 @@
+use readme;
+
 # список типов контента для поста;
 INSERT INTO content_type (type, icon)
 VALUES ('Текст', 'text'),
