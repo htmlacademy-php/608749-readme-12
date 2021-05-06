@@ -6,29 +6,31 @@ require_once 'helpers.php';
 require_once 'models.php';
 require_once 'config/db.php';
 
-// объявления переменной
+// получение mysqli объекта для работы с базой данных
 $link = init($db);
-$result_content_types = get_content_types($link);
-$result_popular_posts = get_popular_posts($link);
+
+// объявление переменных
 $is_auth = rand(0, 1);
 $user_name = 'Тина Кузьменко';
 $title = 'readme: популярное';
 
-// проверяем все ли в порядке с данными
+// получение данных
+$result_content_types = get_content_types($link);
+$result_popular_posts = get_popular_posts($link);
+
+// проверка данных
 $mysql_error = catch_mysql_error($result_content_types, $result_popular_posts);
 
 if ($mysql_error) {
     $main = include_template('error.php', ['error' => $mysql_error]);
-    die();
+} else {
+    $main = include_template('main.php', [
+        'posts' => $result_popular_posts,
+        'content_types' => $result_content_types,
+    ]);
 }
 
-// передаем данные в шаблон
-$main = include_template('main.php', [
-    'posts' => $result_popular_posts,
-    'content_types' => $result_content_types,
-]);
-
-// составляем template страницы
+// составление layout страницы
 $layout = include_template('layout.php', [
     'main' => $main,
     'title' => $title,
@@ -36,5 +38,5 @@ $layout = include_template('layout.php', [
     'user_name' => $user_name,
 ]);
 
-// отрисовываем
+// отрисовка
 print($layout);
