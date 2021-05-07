@@ -1,65 +1,36 @@
 <?php
 
+// импорты
 require_once 'user-functions.php';
 require_once 'helpers.php';
+require_once 'models.php';
+require_once 'config/db.php';
 
+// получение mysqli объекта для работы с базой данных
+$link = init($db);
+
+// объявление переменных
 $is_auth = rand(0, 1);
-
 $user_name = 'Тина Кузьменко';
-
 $title = 'readme: популярное';
 
-$posts = [
-  [
-      'heading' => 'Цитата',
-      'type' => 'post-quote',
-      'content' => 'Мы в жизни любим только раз, а после ищем лишь похожих',
-      'username' => 'Лариса',
-      'avatar' => 'userpic-larisa-small.jpg'
-  ],
-  [
-      'heading' => 'Полезный пост про Байкал',
-      'type' => 'post-text',
-      'content' => 'Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
-      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской границы.
-      Байкал считается самым глубоким озером в мире. Озеро Байкал – огромное',
-      'username' => 'Лариса',
-      'avatar' => 'userpic-larisa-small.jpg'
-  ],
-  [
-      'heading' => 'Игра престолов',
-      'type' => 'post-text',
-      'content' => 'Не могу дождаться начала финального сезона своего любимого сериала!',
-      'username' => 'Владик',
-      'avatar' => 'userpic.jpg'
-  ],
-  [
-      'heading' => 'Наконец, обработал фотки!',
-      'type' => 'post-photo',
-      'content' => 'rock-medium.jpg',
-      'username' => 'Виктор',
-      'avatar' => 'userpic-mark.jpg'
-  ],
-  [
-      'heading' => 'Моя мечта',
-      'type' => 'post-photo',
-      'content' => 'coast-medium.jpg',
-      'username' => 'Лариса',
-      'avatar' => 'userpic-larisa-small.jpg'
-  ],
-  [
-      'heading' => 'Лучшие курсы',
-      'type' => 'post-link',
-      'content' => 'www.htmlacademy.ru',
-      'username' => 'Владик',
-      'avatar' => 'userpic.jpg'
-  ],
-];
+// получение данных
+$result_content_types = get_content_types($link);
+$result_popular_posts = get_popular_posts($link);
 
-$main = include_template('main.php', [
-    'posts' => $posts,
-]);
+// проверка данных
+$mysql_error = catch_mysql_error($result_content_types, $result_popular_posts);
 
+if ($mysql_error) {
+    $main = include_template('error.php', ['error' => $mysql_error]);
+} else {
+    $main = include_template('main.php', [
+        'posts' => $result_popular_posts,
+        'content_types' => $result_content_types,
+    ]);
+}
+
+// составление layout страницы
 $layout = include_template('layout.php', [
     'main' => $main,
     'title' => $title,
@@ -67,4 +38,5 @@ $layout = include_template('layout.php', [
     'user_name' => $user_name,
 ]);
 
+// отрисовка
 print($layout);

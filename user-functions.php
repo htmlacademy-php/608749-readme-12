@@ -4,11 +4,43 @@
 date_default_timezone_set('Europe/Amsterdam');
 
 /**
+ * Функция для инициализации базы данных в приложении
+ * @param   array $db       Массив с настройками для базы данных
+ * @return  mysqli|string   Объект mysqli для запросов в базу данных или строка с ошибкой
+ */
+function init(array $db) {
+    $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+
+    if (!$link) {
+        return mysqli_connect_error();
+    }
+
+    mysqli_set_charset($link, 'utf8');
+
+    return $link;
+}
+
+/**
+ * Вспомогательная функция для проверки полученных данных на наличие ошибок
+ * @param   mixed ...$params  параметры, которые нужно проверить на наличие ошибки
+ * @return  string            строка с ошибкой или пустая строка, если ошибок нет
+ */
+function catch_mysql_error(...$params): string {
+    foreach ($params as $param) {
+        if (gettype($param) === 'string') {
+            return $param;
+        }
+    }
+
+    return '';
+}
+
+/**
  * Функция, которая возвращает результат: оригинальный текст, если его длина меньше
  * заданного числа символов. В противном случае это урезанный текст с прибавленным к нему троеточием.
- * @param string $string
- * @param int $max_length
- * @return string
+ * @param string $string    строка, которую требуется обрезать
+ * @param int $max_length   максимально допустимый размер строки
+ * @return string           обрезанная строка
  */
 function cut_string(string $string, int $max_length = 300): string {
 
@@ -33,10 +65,10 @@ function cut_string(string $string, int $max_length = 300): string {
 /**
  * Функция, которая генерирует разметку текстового поста. И, в зависимости от его длины,
  * обрезает текст и добавляет к нему ссылку на полный пост.
- * @param string $content
- * @param string $link
- * @param int $max_length
- * @return string
+ * @param string $content   контент, который вставляется в разметку
+ * @param string $link      ссылка на полную версию поста
+ * @param int $max_length   максимально допустимый размер текста
+ * @return string           сгенерированная разметка для шаблона
  */
 function create_text_post(string $content, string $link = '#', int $max_length = 300): string {
 
@@ -52,8 +84,8 @@ function create_text_post(string $content, string $link = '#', int $max_length =
 /**
  * Функция, которая форматирует дату в относительный ("человеческий") формат в виде прошедших с данного момента
  * минут, часов, дней, недель или месяцев.
- * @param string $date
- * @return string
+ * @param string $date    дата, которую нужно отформатировать
+ * @return string         дата в "человеческом" формате в виде строки
  */
 function humanize_date(string $date): string {
 

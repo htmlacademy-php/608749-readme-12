@@ -34,7 +34,7 @@ function db_get_prepare_stmt($link, $sql, $data = [])
 {
     $stmt = mysqli_prepare($link, $sql);
 
-    if ($stmt === false) {
+    if (!$stmt) {
         $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($link);
         die($errorMsg);
     }
@@ -44,18 +44,18 @@ function db_get_prepare_stmt($link, $sql, $data = [])
         $stmt_data = [];
 
         foreach ($data as $value) {
-            $type = 's';
-
-            if (is_int($value)) {
-                $type = 'i';
-            } else {
-                if (is_string($value)) {
+            switch ($value) {
+                case (is_string($value)):
                     $type = 's';
-                } else {
-                    if (is_double($value)) {
-                        $type = 'd';
-                    }
-                }
+                    break;
+                case (is_int($value)):
+                    $type = 'i';
+                    break;
+                case (is_double($value)):
+                    $type = 'd';
+                    break;
+                default:
+                    $type = '';
             }
 
             if ($type) {
@@ -64,12 +64,9 @@ function db_get_prepare_stmt($link, $sql, $data = [])
             }
         }
 
-        $values = array_merge([$stmt, $types], $stmt_data);
+        mysqli_stmt_bind_param($stmt, $types, ...$stmt_data);
 
-        $func = 'mysqli_stmt_bind_param';
-        $func(...$values);
-
-        if (mysqli_errno($link) > 0) {
+        if (mysqli_errno($link)) {
             $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
             die($errorMsg);
         }
