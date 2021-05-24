@@ -8,7 +8,10 @@
                 <b class="popular__sorting-caption sorting__caption">Сортировка:</b>
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
-                        <a class="sorting__link sorting__link--active" href="#">
+                        <a
+                            class="sorting__link sorting__link--active"
+                            href="/?sort=views"
+                        >
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -16,7 +19,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a class="sorting__link" href="/?sort=likes">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -24,7 +27,7 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="#">
+                        <a class="sorting__link" href="/?sort=date">
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -37,16 +40,20 @@
                 <b class="popular__filters-caption filters__caption">Тип контента:</b>
                 <ul class="popular__filters-list filters__list">
                     <li class="popular__filters-item popular__filters-item--all filters__item filters__item--all">
-                        <a class="filters__button filters__button--ellipse filters__button--all filters__button--active" href="#">
+                        <a
+                            class="filters__button filters__button--ellipse filters__button--all <?= !$active_filter ? 'filters__button--active' : ''; ?>"
+                            href="/?filter=all"
+                        >
                             <span>Все</span>
                         </a>
                     </li>
                     <?php foreach ($content_types as $content_type):
+                        $id = $content_type['id'];
                         $label = $content_type['type'];
                         $type = $content_type['icon'];
                     ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--<?= $type; ?> button" href="#">
+                        <a class="filters__button filters__button--<?= $type; ?> button <?= $active_filter === $id ? 'filters__button--active' : ''; ?>" href="/?filter=<?= $id; ?>">
                             <span class="visually-hidden"><?= $label; ?></span>
                             <svg class="filters__icon" width="22" height="18">
                                 <use xlink:href="#icon-filter-<?= $type; ?>"></use>
@@ -65,7 +72,7 @@
             ?>
                 <article class="popular__post post post-<?=$post['icon'] ?>">
                     <header class="post__header">
-                        <h2><?= $post_title; ?></h2>
+                        <h2><a href="/post.php?id=<?= $post['id'] ?>"><?= $post_title; ?></a></h2>
                     </header>
                     <div class="post__main">
                         <?php if($post['icon'] === 'quote'): ?>
@@ -99,7 +106,7 @@
                         <?php elseif($post['icon'] === 'video'): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?=embed_youtube_cover(/* вставьте ссылку на видео */); ?>
+                                    <?=embed_youtube_cover('#'); ?>
                                     <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
                                 </div>
                                 <a href="post-details.html" class="post-video__play-big button">
