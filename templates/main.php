@@ -68,6 +68,7 @@
             <?php foreach ($posts as $index => $post):
                 $post_title = htmlspecialchars($post['title']);
                 $post_content = htmlspecialchars($post['content']);
+                $cite_author = htmlspecialchars($post['cite_author']) ?? '';
                 $post_date = generate_random_date($index);
             ?>
                 <article class="popular__post post post-<?=$post['icon'] ?>">
@@ -80,7 +81,7 @@
                                 <p>
                                     <?= $post_content; ?>
                                 </p>
-                                <cite>Неизвестный Автор</cite>
+                                <cite><?= $cite_author; ?></cite>
                             </blockquote>
 
                         <?php elseif($post['icon'] === 'link'): ?>
@@ -100,16 +101,16 @@
 
                         <?php elseif($post['icon'] === 'photo'): ?>
                             <div class="post-photo__image-wrapper">
-                                <img src="img/<?= $post_content; ?>" alt="Фото от пользователя" width="360" height="240">
+                                <img src="<?= $post_content; ?>" alt="Фото от пользователя" width="360" height="240">
                             </div>
 
                         <?php elseif($post['icon'] === 'video'): ?>
                             <div class="post-video__block">
                                 <div class="post-video__preview">
-                                    <?=embed_youtube_cover('#'); ?>
-                                    <img src="img/coast-medium.jpg" alt="Превью к видео" width="360" height="188">
+                                    <?= check_youtube_url($post_content) ?>
+                                    <img src="<?= $post['cover']; ?>" alt="Превью к видео" width="360" height="188">
                                 </div>
-                                <a href="post-details.html" class="post-video__play-big button">
+                                <a href="/post.php?id=<?= $post['id'] ?>" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">
                                         <use xlink:href="#icon-video-play-big"></use>
                                     </svg>

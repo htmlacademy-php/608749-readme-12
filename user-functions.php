@@ -6,6 +6,7 @@ date_default_timezone_set('Europe/Amsterdam');
 /**
  * Функция для инициализации базы данных в приложении
  * @param   array $db       Массив с настройками для базы данных
+ *
  * @return  mysqli|string   Объект mysqli для запросов в базу данных или строка с ошибкой
  */
 function init(array $db) {
@@ -23,6 +24,7 @@ function init(array $db) {
 /**
  * Вспомогательная функция для проверки полученных данных на наличие ошибок
  * @param   mixed ...$params  параметры, которые нужно проверить на наличие ошибки
+ *
  * @return  string            строка с ошибкой или пустая строка, если ошибок нет
  */
 function catch_mysql_error(...$params): string {
@@ -40,6 +42,7 @@ function catch_mysql_error(...$params): string {
  * заданного числа символов. В противном случае это урезанный текст с прибавленным к нему троеточием.
  * @param string $string    строка, которую требуется обрезать
  * @param int $max_length   максимально допустимый размер строки
+ *
  * @return string           обрезанная строка
  */
 function cut_string(string $string, int $max_length = 300): string {
@@ -68,6 +71,7 @@ function cut_string(string $string, int $max_length = 300): string {
  * @param string $content   контент, который вставляется в разметку
  * @param string $link      ссылка на полную версию поста
  * @param int $max_length   максимально допустимый размер текста
+ *
  * @return string           сгенерированная разметка для шаблона
  */
 function create_text_post(string $content, string $link = '#', int $max_length = 300): string {
@@ -85,6 +89,7 @@ function create_text_post(string $content, string $link = '#', int $max_length =
  * Функция, которая форматирует дату в относительный ("человеческий") формат в виде прошедших с данного момента
  * минут, часов, дней, недель или месяцев.
  * @param string $date    дата, которую нужно отформатировать
+ *
  * @return string         дата в "человеческом" формате в виде строки
  */
 function humanize_date(string $date): string {
