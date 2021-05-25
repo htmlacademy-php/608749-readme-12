@@ -57,7 +57,8 @@ function db_get_prepare_stmt($link, $sql, $data = [])
         $type = gettype($value);
 
         if (!isset($data_types[$type])) {
-            throw new Exception('Invalid data type');
+            $error_msg = 'Не валидный тип данных ' . $type;
+            die($error_msg);
         }
 
         $types .= $data_types[$type];

@@ -1,5 +1,4 @@
 <main class="page__main page__main--publication">
-    <?= print_r($post); ?>
     <div class="container">
         <h1 class="page__title page__title--publication"><?= $post['title'] ?></h1>
         <section class="post-details">
@@ -7,24 +6,24 @@
             <div class="post-details__wrapper post-<?= $post['icon']; ?>">
                 <div class="post-details__main-block post post--details">
                     <?php if($post['icon'] === 'text'): ?>
-                        <?= include_template('posts/text.php', [
+                        <?= include_template('post/text.php', [
                             'text' => $post['content'],
                         ]); ?>
                     <?php elseif($post['icon'] === 'quote'): ?>
-                        <?= include_template('posts/quote.php', [
+                        <?= include_template('post/quote.php', [
                             'text' => $post['content'],
                             'author' => $post['cite_author']
                         ]); ?>
                     <?php elseif($post['icon'] === 'video'): ?>
-                        <?= include_template('posts/video.php', [
+                        <?= include_template('post/video.php', [
                             'youtube_url' => $post['content'],
                         ]); ?>
                     <?php elseif($post['icon'] === 'photo'): ?>
-                        <?= include_template('posts/photo.php', [
+                        <?= include_template('post/photo.php', [
                             'img_url' => $post['content'],
                         ]); ?>
                     <?php elseif($post['icon'] === 'link'): ?>
-                        <?= include_template('posts/link.php', [
+                        <?= include_template('post/link.php', [
                             'url' => $post['content'],
                             'title' => $post['title'],
                         ]); ?>
@@ -39,14 +38,14 @@
                                      height="17">
                                     <use xlink:href="#icon-heart-active"></use>
                                 </svg>
-                                <span>250</span>
+                                <span><?= $post['likes'] ?></span>
                                 <span class="visually-hidden">количество лайков</span>
                             </a>
                             <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
                                 <svg class="post__indicator-icon" width="19" height="17">
                                     <use xlink:href="#icon-comment"></use>
                                 </svg>
-                                <span>25</span>
+                                <span><?= count($comments) ?></span>
                                 <span class="visually-hidden">количество комментариев</span>
                             </a>
                             <a class="post__indicator post__indicator--repost button" href="#" title="Репост">
@@ -88,53 +87,19 @@
                         </form>
                         <div class="comments__list-wrapper">
                             <ul class="comments__list">
-                                <li class="comments__item user">
-                                    <div class="comments__avatar">
-                                        <a class="user__avatar-link" href="#">
-                                            <img class="comments__picture" src="img/userpic-larisa.jpg"
-                                                 alt="Аватар пользователя">
-                                        </a>
-                                    </div>
-                                    <div class="comments__info">
-                                        <div class="comments__name-wrapper">
-                                            <a class="comments__user-name" href="#">
-                                                <span>Лариса Роговая</span>
-                                            </a>
-                                            <time class="comments__time" datetime="2019-03-20">1 ч назад</time>
-                                        </div>
-                                        <p class="comments__text">
-                                            Красота!!!1!
-                                        </p>
-                                    </div>
-                                </li>
-                                <li class="comments__item user">
-                                    <div class="comments__avatar">
-                                        <a class="user__avatar-link" href="#">
-                                            <img class="comments__picture" src="img/userpic-larisa.jpg"
-                                                 alt="Аватар пользователя">
-                                        </a>
-                                    </div>
-                                    <div class="comments__info">
-                                        <div class="comments__name-wrapper">
-                                            <a class="comments__user-name" href="#">
-                                                <span>Лариса Роговая</span>
-                                            </a>
-                                            <time class="comments__time" datetime="2019-03-18">2 дня назад</time>
-                                        </div>
-                                        <p class="comments__text">
-                                            Озеро Байкал – огромное древнее озеро в горах Сибири к северу от монгольской
-                                            границы. Байкал считается самым глубоким озером в мире. Он окружен сетью
-                                            пешеходных маршрутов, называемых Большой байкальской тропой. Деревня
-                                            Листвянка, расположенная на западном берегу озера, – популярная отправная
-                                            точка для летних экскурсий. Зимой здесь можно кататься на коньках и собачьих
-                                            упряжках.
-                                        </p>
-                                    </div>
-                                </li>
+                                <?php foreach ($comments as $comment): ?>
+                                    <?= include_template('post/comment.php', [
+                                        'date' => $comment['date'],
+                                        'content' => $comment['content'],
+                                        'login' => $comment['login'],
+                                        'avatar' => $comment['avatar'],
+                                        'id' => $comment['user_id'],
+                                    ]); ?>
+                                <?php endforeach; ?>
                             </ul>
                             <a class="comments__more-link" href="#">
                                 <span>Показать все комментарии</span>
-                                <sup class="comments__amount">45</sup>
+                                <sup class="comments__amount"><?= count($comments); ?></sup>
                             </a>
                         </div>
                     </div>

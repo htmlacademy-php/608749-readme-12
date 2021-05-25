@@ -19,18 +19,23 @@ $params = [
 ];
 
 $result_post = get_post_details($link, $params['id']);
+$result_comments = get_post_comments($link, $params['id']);
 
 // проверка данных
-$mysql_error = catch_mysql_error($result_post);
+$mysql_error = catch_mysql_error($result_post, $result_comments);
 
 // получаем шаблон для main
 if (empty($result_post)) {
     $main = include_template('errors/not-found.php');
 } else {
+    $likes = get_likes($link, $result_post[0]['id']);
+    $post = array_merge(...$result_post, ...$likes);
+
     $main = $mysql_error
         ? include_template('errors/db-error.php', ['error' => $mysql_error])
         : include_template('post-details.php', [
-            'post' => $result_post[0],
+            'post' => $post,
+            'comments' => $result_comments,
     ]);
 }
 
