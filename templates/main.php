@@ -9,11 +9,16 @@
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
                         <a
-                            class="sorting__link <?= !$active_sort || $active_sort === 'views' ? 'sorting__link--active' : ''?>"
-                            href="<?= !$active_filter ? '/?sort=views' : build_query([
+                            class="sorting__link
+                            <?= !$active_sort || $active_sort === 'views' ? 'sorting__link--active' : ''?>
+                            <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
+                            href="<?= !$active_filter ? build_query([
+                                'sort' => 'views',
+                                'direction' => $active_sort === 'views' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                            ]) : build_query([
                                 'filter' => $active_filter,
                                 'sort' => 'views',
-                                'direction' => $sort_direction,
+                                'direction' => $active_sort === 'views' && $sort_direction !== 'asc' ? 'asc' : 'desc',
                             ]); ?>"
                         >
                             <span>Популярность</span>
@@ -23,11 +28,17 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link <?= $active_sort === 'likes' ? 'sorting__link--active' : ''?>"
-                           href="<?= !$active_filter ? '/?sort=likes' : build_query([
+                        <a
+                            class="sorting__link
+                            <?= $active_sort === 'likes' ? 'sorting__link--active' : ''?>
+                            <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
+                            href="<?= !$active_filter ? build_query([
+                                'sort' => 'likes',
+                                'direction' => $active_sort === 'likes' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                            ]) : build_query([
                             'filter' => $active_filter,
                             'sort' => 'likes',
-                            'direction' => $sort_direction,
+                            'direction' => $active_sort === 'likes' && $sort_direction !== 'asc' ? 'asc' : 'desc',
                         ]); ?>">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
@@ -36,11 +47,17 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link <?= $active_sort === 'date' ? 'sorting__link--active' : ''?>"
-                           href="<?= !$active_filter ? '/?sort=date' : build_query([
+                        <a
+                            class="sorting__link
+                            <?= $active_sort === 'date' ? 'sorting__link--active' : ''?>
+                            <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
+                            href="<?= !$active_filter ? build_query([
+                                'sort' => 'date',
+                                'direction' => $active_sort === 'date' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                            ]) : build_query([
                                'filter' => $active_filter,
                                'sort' => 'date',
-                               'direction' => $sort_direction,
+                               'direction' => $active_sort === 'date' && $sort_direction !== 'asc' ? 'asc' : 'desc',
                            ]); ?>"
                         >
                             <span>Дата</span>
