@@ -18,14 +18,19 @@ $title = 'readme: популярное';
 $params = [
     'filter' => filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_NUMBER_INT) ?? 0,
     'sort' => filter_input(INPUT_GET, 'sort', FILTER_SANITIZE_STRING) ?? 'views',
+    'direction' => filter_input(INPUT_GET, 'direction', FILTER_SANITIZE_STRING) ?? 'desc'
 ];
 
-// @todo вернуть работоспособность фильтров и добавить работу сортировки
-//$query = build_query($params);
+function build_query($params) {
+    $scriptname = pathinfo(__FILE__, PATHINFO_BASENAME);
+    $query = http_build_query($params);
+
+    return "/" . $scriptname . "?" . $query;
+}
 
 // получаем данные
 $result_content_types = get_content_types($link);
-$result_popular_posts = get_popular_posts($link, $params['filter']);
+$result_popular_posts = get_popular_posts($link, $params);
 
 // проверка данных
 $mysql_error = catch_mysql_error($result_content_types, $result_popular_posts);
@@ -48,8 +53,9 @@ $main = $mysql_error
     : include_template('main.php', [
         'posts' => $prepared_posts,
         'content_types' => $result_content_types,
-        'active_filter' => $params['filter'],
+        'active_filter' => intval($params['filter']),
         'active_sort' => $params['sort'],
+        'sort_direction' => $params['direction'],
     ]);
 
 // составление layout страницы

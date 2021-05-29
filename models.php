@@ -40,28 +40,39 @@ function get_content_types(mysqli $link) {
 
 /**
  * Функция для получения популярных постов из базы данных
- * @param   mysqli $link                Объект mysql
- * @param   int|string $active_filter   id активного фильтра
+ * @param   mysqli $link        Объект mysql
+ * @param   array $params       ассоциативный массив с параметрами поиска:
+ *                              - filter      активный фильтр
+ *                              - sort        тип сортировки
+ *                              - direction   направление сортировки
  *
  * @return  array|string  ассоциативный массив с данными или сообщение об ошибке
  */
 function get_popular_posts(
     mysqli $link,
-    $active_filter
+    array $params
 ) {
-
+    $sort_param = $params['sort'];
+    $direction = strtoupper($params['direction']);
+    $sort = $sort_param === 'likes' ? " ORDER BY likes $direction" : " ORDER BY $sort_param $direction";
     $sql =
-        'SELECT p.id, date, title, content, cite_author, cover, views, login, icon, avatar
+        'SELECT p.id, date, title, content, cite_author, cover, views, login, icon, avatar, pl.likes
         FROM post p
         JOIN user u ON p.user_id = u.id
         JOIN content_type ct ON p.content_type_id = ct.id
+        LEFT OUTER JOIN (
+            SELECT post_id, COUNT(user_id) AS likes FROM post_like
+            GROUP BY post_id
+        ) pl ON p.id = pl.post_id
         WHERE ? > 0 AND content_type_id = ?
            OR
-              ? = 0 AND content_type_id > 0
-        ORDER BY views DESC
-        LIMIT 6';
+              ? = 0 AND content_type_id > 0 ' . $sort . ' LIMIT 6';
 
-    return get_data($link, $sql, [$active_filter, $active_filter, $active_filter]);
+    return get_data($link, $sql, [
+        $params['filter'],
+        $params['filter'],
+        $params['filter']
+    ]);
 }
 
 /**
@@ -76,9 +87,9 @@ function get_likes(
     int $post_id
 ) {
     $sql = '
-    SELECT COUNT(l.user_id) likes
-    FROM post_like l
-    JOIN post p ON l.post_id = p.id
+    SELECT COUNT(pl.user_id) likes
+    FROM post_like pl
+    JOIN post p ON pl.post_id = p.id
     WHERE p.id = ?';
 
     return get_data($link, $sql, [$post_id]);

@@ -120,16 +120,3 @@ function humanize_date(string $date, bool $is_full = true): string {
             return 'недавно';
     }
 }
-
-/**
- * Функция для формирования адреса ссылки с параметрами $_GET запроса
- * @param array $params  массив с текущими/дефолтными параметрами $_GET
- *
- * @return string
- */
-function build_query (array $params) {
-    $scriptname = pathinfo(__FILE__, PATHINFO_BASENAME);
-    $query = http_build_query($params);
-
-    return "/" . $scriptname . "?" . $query;
-}

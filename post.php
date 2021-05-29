@@ -26,13 +26,15 @@ $result_comments = get_post_comments($link, $params['id']);
 $mysql_error = catch_mysql_error($result_post, $result_hashtags, $result_comments);
 
 // запрос данных о пользователе
-$user_id = $result_post[0]['user_id'];
-$result_user = get_user($link, $user_id);
-$user_subscribers = get_subscribers_amount($link, $user_id);
-$user_posts = get_posts_amount($link, $user_id);
+if (!$mysql_error && !empty($result_post)) {
+    $user_id = $result_post[0]['user_id'];
+    $result_user = get_user($link, $user_id);
+    $user_subscribers = get_subscribers_amount($link, $user_id);
+    $user_posts = get_posts_amount($link, $user_id);
+}
 
 // получаем шаблон для main
-if (empty($result_post)) {
+if (empty($result_post) || !$result_post) {
     $main = include_template('errors/not-found.php', [ 'error' => $mysql_error, ]);
 } else {
     $likes = get_likes($link, $result_post[0]['id']);

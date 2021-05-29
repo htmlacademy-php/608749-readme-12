@@ -9,8 +9,12 @@
                 <ul class="popular__sorting-list sorting__list">
                     <li class="sorting__item sorting__item--popular">
                         <a
-                            class="sorting__link sorting__link--active"
-                            href="/?sort=views"
+                            class="sorting__link <?= !$active_sort || $active_sort === 'views' ? 'sorting__link--active' : ''?>"
+                            href="<?= !$active_filter ? '/?sort=views' : build_query([
+                                'filter' => $active_filter,
+                                'sort' => 'views',
+                                'direction' => $sort_direction,
+                            ]); ?>"
                         >
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
@@ -19,7 +23,12 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="/?sort=likes">
+                        <a class="sorting__link <?= $active_sort === 'likes' ? 'sorting__link--active' : ''?>"
+                           href="<?= !$active_filter ? '/?sort=likes' : build_query([
+                            'filter' => $active_filter,
+                            'sort' => 'likes',
+                            'direction' => $sort_direction,
+                        ]); ?>">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -27,7 +36,13 @@
                         </a>
                     </li>
                     <li class="sorting__item">
-                        <a class="sorting__link" href="/?sort=date">
+                        <a class="sorting__link <?= $active_sort === 'date' ? 'sorting__link--active' : ''?>"
+                           href="<?= !$active_filter ? '/?sort=date' : build_query([
+                               'filter' => $active_filter,
+                               'sort' => 'date',
+                               'direction' => $sort_direction,
+                           ]); ?>"
+                        >
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -53,7 +68,9 @@
                         $type = $content_type['icon'];
                     ?>
                     <li class="popular__filters-item filters__item">
-                        <a class="filters__button filters__button--<?= $type; ?> button <?= $active_filter === $id ? 'filters__button--active' : ''; ?>" href="/?filter=<?= $id; ?>">
+                        <a class="filters__button filters__button--<?= $type; ?> button <?= $active_filter === $id ? 'filters__button--active' : ''; ?>"
+                           href="/?filter=<?= $id; ?>"
+                        >
                             <span class="visually-hidden"><?= $label; ?></span>
                             <svg class="filters__icon" width="22" height="18">
                                 <use xlink:href="#icon-filter-<?= $type; ?>"></use>
@@ -163,6 +180,10 @@
                     </footer>
                 </article>
             <?php endforeach; ?>
+        </div>
+        <div class="popular__page-links">
+            <a class="popular__page-link popular__page-link--prev button button--gray" href="#">Предыдущая страница</a>
+            <a class="popular__page-link popular__page-link--next button button--gray" href="#">Следующая страница</a>
         </div>
     </div>
 </section>
