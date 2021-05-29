@@ -88,11 +88,12 @@ function create_text_post(string $content, string $link = '#', int $max_length =
 /**
  * Функция, которая форматирует дату в относительный ("человеческий") формат в виде прошедших с данного момента
  * минут, часов, дней, недель или месяцев.
- * @param string $date    дата, которую нужно отформатировать
+ * @param string $date      дата, которую нужно отформатировать
+ * @param bool $is_full     полный или не полный вариант фразы
  *
  * @return string         дата в "человеческом" формате в виде строки
  */
-function humanize_date(string $date): string {
+function humanize_date(string $date, bool $is_full = true): string {
 
     $current = date_create();
     $post_date = date_create($date);
@@ -106,17 +107,17 @@ function humanize_date(string $date): string {
 
     switch (true) {
         case ($months):
-            return "$months " . get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев') . " назад";
+            return "$months " . get_noun_plural_form($months, 'месяц', 'месяца', 'месяцев') . ($is_full ? ' назад' : '');
         case ($days >= 7):
-            return "$weeks " . get_noun_plural_form($weeks, 'неделя', 'недели', 'недель') . " назад";
+            return "$weeks " . get_noun_plural_form($weeks, 'неделя', 'недели', 'недель') . ($is_full ? ' назад' : '');
         case ($days):
-            return "$days " . get_noun_plural_form($days, 'день', 'дня', 'дней') . " назад";
+            return "$days " . get_noun_plural_form($days, 'день', 'дня', 'дней') . ($is_full ? ' назад' : '');
         case ($hours):
-            return "$hours " . get_noun_plural_form($hours, 'час', 'часа', 'часов') . " назад";
+            return "$hours " . get_noun_plural_form($hours, 'час', 'часа', 'часов') . ($is_full ? ' назад' : '');
         case ($minutes):
-            return "$minutes " . get_noun_plural_form($minutes, 'минута', 'минуты', 'минут') . " назад";
+            return "$minutes " . get_noun_plural_form($minutes, 'минута', 'минуты', 'минут') . ($is_full ? ' назад' : '');
         default:
-            return "Недавно";
+            return 'недавно';
     }
 }
 

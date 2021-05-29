@@ -106,6 +106,83 @@ function get_post_details (
 }
 
 /**
+ * Функция для получения информации о пользователе из базы данных
+ * @param mysqli $link
+ * @param int $user_id
+ *
+ * @return array|string
+ */
+function get_user(
+    mysqli $link,
+    int $user_id
+) {
+    $sql =
+        'SELECT registration, avatar, login
+        FROM user
+        WHERE id = ?';
+
+    return get_data($link, $sql, [$user_id]);
+}
+
+/**
+ * Функция для получения информации о количестве подписчиков у пользователя
+ * @param mysqli $link
+ * @param int $user_id
+ *
+ * @return array|string
+ */
+function get_subscribers_amount(
+    mysqli $link,
+    int $user_id
+) {
+    $sql =
+        'SELECT COUNT(recipient_id) subscribers
+        FROM subscription
+        WHERE recipient_id = ?';
+
+    return get_data($link, $sql, [$user_id]);
+}
+
+/**
+ * Функция для получения информации о количестве постов у пользователя
+ * @param mysqli $link
+ * @param int $user_id
+ *
+ * @return array|string
+ */
+function get_posts_amount (
+    mysqli $link,
+    int $user_id
+) {
+    $sql =
+        'SELECT COUNT(id) posts
+        FROM post
+        WHERE user_id = ?';
+
+    return get_data($link, $sql, [$user_id]);
+}
+
+/**
+ * Функция для получения хэштегов к посту
+ * @param mysqli $link
+ * @param int $post_id
+ *
+ * @return array|string
+ */
+function get_post_hashtags(
+    mysqli $link,
+    int $post_id
+) {
+    $sql =
+        'SELECT p.post_id, p.hashtag_id, hashtag
+        FROM post_hashtag p
+        JOIN hashtag h on p.hashtag_id = h.id
+        WHERE post_id = ?';
+
+    return get_data($link, $sql, [$post_id]);
+}
+
+/**
  * Функция для получения комментариев поста из базы данных
  * @param mysqli $link      Объект mysql
  * @param int $post_id      id поста

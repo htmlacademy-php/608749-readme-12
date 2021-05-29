@@ -10,8 +10,8 @@ VALUES ('Текст', 'text'),
 
 # список пользователей;
 INSERT INTO user (email, login, password, avatar)
-VALUES ('phizntrg@msn.com', 'Владик', 'abc12345', '/img/userpic.jpg'),
-       ('wiseb@msn.com', 'Лариса', 'qwwerty', '/img/userpic-larisa-small.jpg'),
+VALUES ('phizntrg@msn.com', 'Владик', 'abc12345', '/img/userpic-big.jpg'),
+       ('wiseb@msn.com', 'Лариса', 'qwwerty', '/img/userpic-larisa.jpg'),
        ('yumpy@msn.com', 'Виктор', 'asdfg123', '/img/userpic-mark.jpg'),
        ('sthomas@comcast.net', 'SThomas', 'password', 'https://placekitten.com/640/640'),
        ('elflord@yahoo.com', 'ElfLord', '12345zxc', 'https://placekitten.com/640/640'),
@@ -86,3 +86,49 @@ VALUES (2, 6);
 # подписаться на пользователя.
 INSERT INTO subscription (user_id, recipient_id)
 VALUES (2, 1);
+
+# добавить хэштеги
+INSERT INTO hashtag (hashtag)
+VALUES ('байкал'), #1
+       ('путешествия'), #2
+       ('музыка'), #3
+       ('сериал'), #4
+       ('полезное'), #5
+       ('природа'), #6
+       ('фото'), #7
+       ('цитата'), #8
+       ('мудрость'), #9
+       ('мечта'), #10
+       ('beautiful'), #11
+       ('видео'), #12
+       ('лол'), #13
+       ('music'), #14
+       ('драйв'), #15
+       ('щикарныйвид'), #16
+       ('курсы'), #17
+       ('академия'), #18
+       ('htmlacademy'); #19
+
+# добавить хэштеги к постам
+INSERT INTO post_hashtag (post_id, hashtag_id)
+VALUES (1, 9),
+       (1, 8),
+       (2, 2),
+       (2, 5),
+       (2, 6),
+       (2, 11),
+       (3, 4),
+       (4, 3),
+       (4, 12),
+       (4, 14),
+       (4, 13),
+       (4, 15),
+       (5, 2),
+       (5, 1),
+       (5, 7),
+       (5, 6),
+       (6, 10),
+       (7, 5),
+       (7, 17),
+       (7, 18),
+       (7, 19);
