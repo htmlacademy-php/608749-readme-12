@@ -14,11 +14,11 @@
                             <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
                             href="<?= !$active_filter ? build_query([
                                 'sort' => 'views',
-                                'direction' => $active_sort === 'views' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                                'direction' => get_sort_direction($active_sort, 'views', $sort_direction),
                             ]) : build_query([
                                 'filter' => $active_filter,
                                 'sort' => 'views',
-                                'direction' => $active_sort === 'views' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                                'direction' => get_sort_direction($active_sort, 'views', $sort_direction),
                             ]); ?>"
                         >
                             <span>Популярность</span>
@@ -34,11 +34,11 @@
                             <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
                             href="<?= !$active_filter ? build_query([
                                 'sort' => 'likes',
-                                'direction' => $active_sort === 'likes' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                                'direction' => get_sort_direction($active_sort, 'likes', $sort_direction),
                             ]) : build_query([
                             'filter' => $active_filter,
                             'sort' => 'likes',
-                            'direction' => $active_sort === 'likes' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                            'direction' => get_sort_direction($active_sort, 'likes', $sort_direction),
                         ]); ?>">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
@@ -53,11 +53,11 @@
                             <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
                             href="<?= !$active_filter ? build_query([
                                 'sort' => 'date',
-                                'direction' => $active_sort === 'date' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                                'direction' => get_sort_direction($active_sort, 'date', $sort_direction),
                             ]) : build_query([
                                'filter' => $active_filter,
                                'sort' => 'date',
-                               'direction' => $active_sort === 'date' && $sort_direction !== 'asc' ? 'asc' : 'desc',
+                               'direction' => get_sort_direction($active_sort, 'date', $sort_direction),
                            ]); ?>"
                         >
                             <span>Дата</span>
@@ -103,7 +103,7 @@
                 $post_title = htmlspecialchars($post['title']);
                 $post_content = htmlspecialchars($post['content']);
                 $cite_author = htmlspecialchars($post['cite_author']) ?? '';
-                $post_date = generate_random_date($index);
+                $post_date = $post['date'];
             ?>
                 <article class="popular__post post post-<?=$post['icon'] ?>">
                     <header class="post__header">
@@ -182,7 +182,7 @@
                                     <svg class="post__indicator-icon post__indicator-icon--like-active" width="20" height="17">
                                         <use xlink:href="#icon-heart-active"></use>
                                     </svg>
-                                    <span><?= $post['likes'] ?></span>
+                                    <span><?= $post['likes'] ?: 0 ?></span>
                                     <span class="visually-hidden">количество лайков</span>
                                 </a>
                                 <a class="post__indicator post__indicator--comments button" href="#" title="Комментарии">
@@ -198,9 +198,11 @@
                 </article>
             <?php endforeach; ?>
         </div>
+        <?php if ($total['total'] > count($posts)): ?>
         <div class="popular__page-links">
             <a class="popular__page-link popular__page-link--prev button button--gray" href="#">Предыдущая страница</a>
             <a class="popular__page-link popular__page-link--next button button--gray" href="#">Следующая страница</a>
         </div>
+        <?php endif; ?>
     </div>
 </section>

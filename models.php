@@ -5,14 +5,14 @@
  * выражениями.
  * @param mysqli $link          Объект mysqli
  * @param string $sql           Подготовленное выражение
- * @param array $sql_params     Массив с параметрами для подготовленного выражения
+ * @param array $sql_params     (опционально) Массив с параметрами для подготовленного выражения
  *
  * @return array|string         Возвращает массив с данными или строку с ошибкой
  */
 function get_data(
     mysqli $link,
     string $sql,
-    array $sql_params
+    array $sql_params = []
 ) {
     $stmt = db_get_prepare_stmt($link, $sql, $sql_params);
     mysqli_stmt_execute($stmt);
@@ -35,7 +35,7 @@ function get_data(
 function get_content_types(mysqli $link) {
     $sql = 'SELECT * FROM content_type';
 
-    return get_data($link, $sql, []);
+    return get_data($link, $sql);
 }
 
 /**
@@ -76,6 +76,18 @@ function get_popular_posts(
 }
 
 /**
+ * Функция для получения общего количества постов из базы данных
+ * @param mysqli $link
+ *
+ * @return array|string
+ */
+function get_total_posts(mysqli $link) {
+    $sql = 'SELECT COUNT(id) AS total FROM post';
+
+    return get_data($link, $sql);
+}
+
+/**
  * Функция для получения количества лайков к посту
  * @param mysqli $link      Объект mysql
  * @param int $post_id      id поста
@@ -87,7 +99,7 @@ function get_likes(
     int $post_id
 ) {
     $sql = '
-    SELECT COUNT(pl.user_id) likes
+    SELECT COUNT(pl.user_id) AS likes
     FROM post_like pl
     JOIN post p ON pl.post_id = p.id
     WHERE p.id = ?';

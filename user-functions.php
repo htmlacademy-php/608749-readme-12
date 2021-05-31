@@ -120,3 +120,27 @@ function humanize_date(string $date, bool $is_full = true): string {
             return 'недавно';
     }
 }
+
+/**
+ * Функция для составления адресной строки из параметров $_GET
+ * @param array $params     ассоциативный массив с параметрами
+ *
+ * @return string    новая адресная строка
+ */
+function build_query(array $params): string {
+    $query = http_build_query($params);
+
+    return "/?"  . $query;
+}
+
+/**
+ * Вспомогательная функция для получения направления сортировки
+ * @param string $current_sort  текущая сортировка
+ * @param string $active_sort   новая активная сортировка
+ * @param string $direction     направление сортировки
+ *
+ * @return string
+ */
+function get_sort_direction (string $current_sort, string $active_sort, string $direction): string {
+    return $active_sort === $current_sort && $direction !== 'asc' ? 'asc' : 'desc';
+}

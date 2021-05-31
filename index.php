@@ -21,16 +21,10 @@ $params = [
     'direction' => filter_input(INPUT_GET, 'direction', FILTER_SANITIZE_STRING) ?? 'desc'
 ];
 
-function build_query($params) {
-    $scriptname = pathinfo(__FILE__, PATHINFO_BASENAME);
-    $query = http_build_query($params);
-
-    return "/" . $scriptname . "?" . $query;
-}
-
 // получаем данные
 $result_content_types = get_content_types($link);
 $result_popular_posts = get_popular_posts($link, $params);
+$total = get_total_posts($link)[0];
 
 // проверка данных
 $mysql_error = catch_mysql_error($result_content_types, $result_popular_posts);
@@ -41,9 +35,8 @@ $prepared_posts = [];
 // собираем все данные для поста
 if (!empty($result_popular_posts)) {
     foreach ($result_popular_posts as $post) {
-        $likes = get_likes($link, $post['id']);
         $comments = get_post_comments($link, $post['id']);
-        $prepared_posts[] = array_merge($post, $likes[0], ['comments' => count($comments)]);
+        $prepared_posts[] = array_merge($post, ['comments' => count($comments)]);
     }
 }
 
@@ -56,6 +49,7 @@ $main = $mysql_error
         'active_filter' => intval($params['filter']),
         'active_sort' => $params['sort'],
         'sort_direction' => $params['direction'],
+        'total' => $total,
     ]);
 
 // составление layout страницы
