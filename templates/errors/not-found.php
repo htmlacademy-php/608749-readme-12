@@ -1,3 +1,7 @@
+<?php
+http_response_code(404);
+?>
+
 <main class="page__main page__main--search-results">
     <h1 class="visually-hidden">Страница ошибки</h1>
     <section class="search">

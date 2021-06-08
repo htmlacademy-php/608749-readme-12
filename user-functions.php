@@ -80,7 +80,7 @@ function create_text_post(string $content, string $link = '#', int $max_length =
 
     if (mb_strlen($content) > $max_length) {
         $result .= '<a class="post-text__more-link" href="' . $link . '">Читать далее</a>';
-    };
+    }
 
     return $result;
 }
@@ -122,25 +122,60 @@ function humanize_date(string $date, bool $is_full = true): string {
 }
 
 /**
- * Функция для составления адресной строки из параметров $_GET
- * @param array $params     ассоциативный массив с параметрами
+ * Вспомогательная функция для генерации линка сортировки
+ * @param string $active_filter   активный фильтр
+ * @param string $active_sort     активная сортировка
+ * @param string $sort_direction  направление сортировки
+ * @param string $current_sort    тип текущей сортировки
  *
- * @return string    новая адресная строка
+ * @return string   сгенерированная ссылка для сортировки
  */
-function build_query(array $params): string {
-    $query = http_build_query($params);
-
-    return "/?"  . $query;
+function get_sorting_link (string $active_filter, string $active_sort, string $sort_direction, string $current_sort): string {
+    if (!$active_filter) {
+        return "/?" . http_build_query([
+                'sort' => $current_sort,
+                'direction' => $active_sort === $current_sort && $sort_direction !== 'asc' ? 'asc' : 'desc',
+            ]);
+    } else {
+        return "/?" . http_build_query([
+            'filter' => $active_filter,
+            'sort' => $current_sort,
+            'direction' => $active_sort === $current_sort && $sort_direction !== 'asc' ? 'asc' : 'desc',
+        ]);
+    }
 }
 
 /**
- * Вспомогательная функция для получения направления сортировки
- * @param string $current_sort  текущая сортировка
- * @param string $active_sort   новая активная сортировка
- * @param string $direction     направление сортировки
+ * Вспомогательная функция для генерации нужного темплейта поста
+ * @param array $post  ассоциативный массив для деталей поста
  *
  * @return string
  */
-function get_sort_direction (string $current_sort, string $active_sort, string $direction): string {
-    return $active_sort === $current_sort && $direction !== 'asc' ? 'asc' : 'desc';
+function createPostTemplate (array $post): string {
+    switch ($post['icon']) {
+        case 'text':
+            return include_template('post/text.php', [
+                'text' => $post['content'],
+            ]);
+        case 'quote':
+            return include_template('post/quote.php', [
+                'text' => $post['content'],
+                'author' => $post['cite_author']
+            ]);
+        case 'video':
+            return include_template('post/video.php', [
+                'youtube_url' => $post['content'],
+            ]);
+        case 'photo':
+            return include_template('post/photo.php', [
+                'img_url' => $post['content'],
+            ]);
+        case 'link':
+            return include_template('post/link.php', [
+                'url' => $post['content'],
+                'title' => $post['title'],
+            ]);
+        default:
+            return 'Недопустимый формат поста.';
+    }
 }

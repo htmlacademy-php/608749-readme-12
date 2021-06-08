@@ -45,18 +45,20 @@ function get_content_types(mysqli $link) {
  *                              - filter      активный фильтр
  *                              - sort        тип сортировки
  *                              - direction   направление сортировки
+ * @param   int $limit          лимит получаемых постов
  *
  * @return  array|string  ассоциативный массив с данными или сообщение об ошибке
  */
 function get_popular_posts(
     mysqli $link,
-    array $params
+    array $params,
+    int $limit
 ) {
     $sort_param = $params['sort'];
     $direction = strtoupper($params['direction']);
-    $sort = $sort_param === 'likes' ? " ORDER BY likes $direction" : " ORDER BY $sort_param $direction";
+    $sort = " ORDER BY $sort_param $direction";
     $sql =
-        'SELECT p.id, date, title, content, cite_author, cover, views, login, icon, avatar, pl.likes
+        'SELECT p.id, date, title, content, cite_author, cover, views, login, icon, avatar, pl.likes, c.comments
         FROM post p
         JOIN user u ON p.user_id = u.id
         JOIN content_type ct ON p.content_type_id = ct.id
@@ -64,9 +66,13 @@ function get_popular_posts(
             SELECT post_id, COUNT(user_id) AS likes FROM post_like
             GROUP BY post_id
         ) pl ON p.id = pl.post_id
+        LEFT OUTER JOIN (
+            SELECT post_id, COUNT(id) AS comments FROM comment c
+            GROUP BY post_id
+        ) c ON p.id = c.post_id
         WHERE ? > 0 AND content_type_id = ?
            OR
-              ? = 0 AND content_type_id > 0 ' . $sort . ' LIMIT 6';
+              ? = 0 AND content_type_id > 0 ' . $sort . ' LIMIT ' .$limit;
 
     return get_data($link, $sql, [
         $params['filter'],
@@ -77,14 +83,19 @@ function get_popular_posts(
 
 /**
  * Функция для получения общего количества постов из базы данных
- * @param mysqli $link
+ * (включая отфильтрованные посты)
+ * @param mysqli $link     Объект mysql
+ * @param string $filter   Активный фильтр
  *
  * @return array|string
  */
-function get_total_posts(mysqli $link) {
-    $sql = 'SELECT COUNT(id) AS total FROM post';
+function get_total_posts(mysqli $link, string $filter) {
+    $sql = 'SELECT COUNT(id) AS total FROM post
+            WHERE ? > 0 AND content_type_id = ?
+               OR
+                  ? = 0 AND content_type_id > 0';
 
-    return get_data($link, $sql);
+    return get_data($link, $sql, [ $filter, $filter, $filter ]);
 }
 
 /**
@@ -178,7 +189,7 @@ function get_posts_amount (
     int $user_id
 ) {
     $sql =
-        'SELECT COUNT(id) posts
+        'SELECT COUNT(id) AS posts
         FROM post
         WHERE user_id = ?';
 

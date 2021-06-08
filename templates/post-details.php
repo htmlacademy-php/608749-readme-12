@@ -5,29 +5,7 @@
             <h2 class="visually-hidden">Публикация</h2>
             <div class="post-details__wrapper post-<?= $post['icon']; ?>">
                 <div class="post-details__main-block post post--details">
-                    <?php if($post['icon'] === 'text'): ?>
-                        <?= include_template('post/text.php', [
-                            'text' => $post['content'],
-                        ]); ?>
-                    <?php elseif($post['icon'] === 'quote'): ?>
-                        <?= include_template('post/quote.php', [
-                            'text' => $post['content'],
-                            'author' => $post['cite_author']
-                        ]); ?>
-                    <?php elseif($post['icon'] === 'video'): ?>
-                        <?= include_template('post/video.php', [
-                            'youtube_url' => $post['content'],
-                        ]); ?>
-                    <?php elseif($post['icon'] === 'photo'): ?>
-                        <?= include_template('post/photo.php', [
-                            'img_url' => $post['content'],
-                        ]); ?>
-                    <?php elseif($post['icon'] === 'link'): ?>
-                        <?= include_template('post/link.php', [
-                            'url' => $post['content'],
-                            'title' => $post['title'],
-                        ]); ?>
-                    <?php endif; ?>
+                    <?= createPostTemplate($post); ?>
                     <div class="post__indicators">
                         <div class="post__buttons">
                             <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
@@ -85,13 +63,7 @@
                         <div class="comments__list-wrapper">
                             <ul class="comments__list">
                                 <?php foreach ($comments as $comment): ?>
-                                    <?= include_template('post/comment.php', [
-                                        'date' => $comment['date'],
-                                        'content' => $comment['content'],
-                                        'login' => $comment['login'],
-                                        'avatar' => $comment['avatar'],
-                                        'id' => $comment['user_id'],
-                                    ]); ?>
+                                    <?= include_template('post/comment.php', $comment); ?>
                                 <?php endforeach; ?>
                             </ul>
                             <a class="comments__more-link" href="#">

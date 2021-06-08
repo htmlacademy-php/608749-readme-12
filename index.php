@@ -10,6 +10,7 @@ require_once 'config/db.php';
 $link = init($db);
 
 // объявление переменных
+$posts_limit = 6;
 $is_auth = rand(0, 1);
 $user_name = 'Тина Кузьменко';
 $title = 'readme: популярное';
@@ -23,33 +24,22 @@ $params = [
 
 // получаем данные
 $result_content_types = get_content_types($link);
-$result_popular_posts = get_popular_posts($link, $params);
-$total = get_total_posts($link)[0];
+$result_popular_posts = get_popular_posts($link, $params, $posts_limit);
+$total = get_total_posts($link, $params['filter'])[0];
 
 // проверка данных
 $mysql_error = catch_mysql_error($result_content_types, $result_popular_posts);
-
-// массив с подготовленными постами для главной
-$prepared_posts = [];
-
-// собираем все данные для поста
-if (!empty($result_popular_posts)) {
-    foreach ($result_popular_posts as $post) {
-        $comments = get_post_comments($link, $post['id']);
-        $prepared_posts[] = array_merge($post, ['comments' => count($comments)]);
-    }
-}
 
 // получаем шаблон для main
 $main = $mysql_error
     ? include_template('db-error.php', ['error' => $mysql_error])
     : include_template('main.php', [
-        'posts' => $prepared_posts,
+        'posts' => $result_popular_posts,
         'content_types' => $result_content_types,
         'active_filter' => intval($params['filter']),
         'active_sort' => $params['sort'],
         'sort_direction' => $params['direction'],
-        'total' => $total,
+        'pagination' => intval($total['total']) > count($result_popular_posts),
     ]);
 
 // составление layout страницы

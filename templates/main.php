@@ -12,15 +12,7 @@
                             class="sorting__link
                             <?= !$active_sort || $active_sort === 'views' ? 'sorting__link--active' : ''?>
                             <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
-                            href="<?= !$active_filter ? build_query([
-                                'sort' => 'views',
-                                'direction' => get_sort_direction($active_sort, 'views', $sort_direction),
-                            ]) : build_query([
-                                'filter' => $active_filter,
-                                'sort' => 'views',
-                                'direction' => get_sort_direction($active_sort, 'views', $sort_direction),
-                            ]); ?>"
-                        >
+                            href="<?= get_sorting_link($active_filter, $active_sort, $sort_direction, 'views'); ?>">
                             <span>Популярность</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -32,14 +24,7 @@
                             class="sorting__link
                             <?= $active_sort === 'likes' ? 'sorting__link--active' : ''?>
                             <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
-                            href="<?= !$active_filter ? build_query([
-                                'sort' => 'likes',
-                                'direction' => get_sort_direction($active_sort, 'likes', $sort_direction),
-                            ]) : build_query([
-                            'filter' => $active_filter,
-                            'sort' => 'likes',
-                            'direction' => get_sort_direction($active_sort, 'likes', $sort_direction),
-                        ]); ?>">
+                            href="<?= get_sorting_link($active_filter, $active_sort, $sort_direction, 'likes'); ?>">
                             <span>Лайки</span>
                             <svg class="sorting__icon" width="10" height="12">
                                 <use xlink:href="#icon-sort"></use>
@@ -51,14 +36,7 @@
                             class="sorting__link
                             <?= $active_sort === 'date' ? 'sorting__link--active' : ''?>
                             <?= $sort_direction === 'asc' ? 'sorting__link--reverse' : '' ?>"
-                            href="<?= !$active_filter ? build_query([
-                                'sort' => 'date',
-                                'direction' => get_sort_direction($active_sort, 'date', $sort_direction),
-                            ]) : build_query([
-                               'filter' => $active_filter,
-                               'sort' => 'date',
-                               'direction' => get_sort_direction($active_sort, 'date', $sort_direction),
-                           ]); ?>"
+                            href="<?= get_sorting_link($active_filter, $active_sort, $sort_direction, 'date'); ?>"
                         >
                             <span>Дата</span>
                             <svg class="sorting__icon" width="10" height="12">
@@ -189,7 +167,7 @@
                                     <svg class="post__indicator-icon" width="19" height="17">
                                         <use xlink:href="#icon-comment"></use>
                                     </svg>
-                                    <span><?= $post['comments']; ?></span>
+                                    <span><?= $post['comments'] ?: 0; ?></span>
                                     <span class="visually-hidden">количество комментариев</span>
                                 </a>
                             </div>
@@ -198,7 +176,7 @@
                 </article>
             <?php endforeach; ?>
         </div>
-        <?php if ($total['total'] > count($posts)): ?>
+        <?php if ($pagination): ?>
         <div class="popular__page-links">
             <a class="popular__page-link popular__page-link--prev button button--gray" href="#">Предыдущая страница</a>
             <a class="popular__page-link popular__page-link--next button button--gray" href="#">Следующая страница</a>
