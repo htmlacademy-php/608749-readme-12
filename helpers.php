@@ -35,41 +35,41 @@ function db_get_prepare_stmt($link, $sql, $data = [])
     $stmt = mysqli_prepare($link, $sql);
 
     if (!$stmt) {
-        $errorMsg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($link);
-        die($errorMsg);
+        $error_msg = 'Не удалось инициализировать подготовленное выражение: ' . mysqli_error($link);
+        die($error_msg);
     }
 
-    if ($data) {
-        $types = '';
-        $stmt_data = [];
+    if (!$data) {
+        return $stmt;
+    }
 
-        foreach ($data as $value) {
-            switch ($value) {
-                case (is_string($value)):
-                    $type = 's';
-                    break;
-                case (is_int($value)):
-                    $type = 'i';
-                    break;
-                case (is_double($value)):
-                    $type = 'd';
-                    break;
-                default:
-                    $type = '';
-            }
+    $data_types = [
+        'string' => 's',
+        'integer' => 'i',
+        'double' => 'd',
+    ];
 
-            if ($type) {
-                $types .= $type;
-                $stmt_data[] = $value;
-            }
+    $types = '';
+    $stmt_data = [];
+
+    foreach ($data as $value) {
+
+        $type = gettype($value);
+
+        if (!isset($data_types[$type])) {
+            $error_msg = 'Не валидный тип данных ' . $type;
+            die($error_msg);
         }
 
-        mysqli_stmt_bind_param($stmt, $types, ...$stmt_data);
+        $types .= $data_types[$type];
+        $stmt_data[] = $value;
+    }
 
-        if (mysqli_errno($link)) {
-            $errorMsg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
-            die($errorMsg);
-        }
+    mysqli_stmt_bind_param($stmt, $types, ...$stmt_data);
+
+    if (mysqli_errno($link)) {
+        $error_msg = 'Не удалось связать подготовленное выражение с параметрами: ' . mysqli_error($link);
+        die($error_msg);
     }
 
     return $stmt;
@@ -169,7 +169,7 @@ function check_youtube_url($url)
         return "Видео по такой ссылке не найдено. Проверьте ссылку на видео";
     }
 
-    return true;
+    return '';
 }
 
 /**
