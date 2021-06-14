@@ -61,9 +61,9 @@
                             <button class="comments__submit button button--green" type="submit">Отправить</button>
                         </form>
                         <div class="comments__list-wrapper">
-                            <ul class="comments__list">
+                            <ul clasFs="comments__list">
                                 <?php foreach ($comments as $comment): ?>
-                                    <?= include_template('post/comment.php', $comment); ?>
+                                    <?= include_template('post-details/comment.php', $comment); ?>
                                 <?php endforeach; ?>
                             </ul>
                             <a class="comments__more-link" href="#">
@@ -71,9 +71,9 @@
                                 <sup class="comments__amount"><?= count($comments); ?></sup>
                             </a>
                         </div>
-                    </div>
+                    </div>F
                 </div>
-                <?= include_template('post/user.php', [
+                <?= include_template('post-details/user.php', [
                     'login' => $user['login'],
                     'avatar' => $user['avatar'],
                     'registration' => $user['registration'],

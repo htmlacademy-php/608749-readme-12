@@ -154,24 +154,24 @@ function get_sorting_link (string $active_filter, string $active_sort, string $s
 function createPostTemplate (array $post): string {
     switch ($post['icon']) {
         case 'text':
-            return include_template('post/text.php', [
+            return include_template('post-details/text.php', [
                 'text' => $post['content'],
             ]);
         case 'quote':
-            return include_template('post/quote.php', [
+            return include_template('post-details/quote.php', [
                 'text' => $post['content'],
                 'author' => $post['cite_author']
             ]);
         case 'video':
-            return include_template('post/video.php', [
+            return include_template('post-details/video.php', [
                 'youtube_url' => $post['content'],
             ]);
         case 'photo':
-            return include_template('post/photo.php', [
+            return include_template('post-details/photo.php', [
                 'img_url' => $post['content'],
             ]);
         case 'link':
-            return include_template('post/link.php', [
+            return include_template('post-details/link.php', [
                 'url' => $post['content'],
                 'title' => $post['title'],
             ]);
