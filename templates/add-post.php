@@ -26,10 +26,15 @@
                     </ul>
                 </div>
                 <div class="adding-post__tab-content">
-                    <?= include_template('add-post/form-layout.php', [
-                        'form_title' => $form_title,
-                        'active_type' => $active_type ?: 'text',
-                    ]) ?>
+                    <?php if ($active_type !== 'error'): ?>
+                        <?= include_template('add-post/form-layout.php', [
+                            'form_title' => $form_title,
+                            'active_type' => $active_type,
+                            'errors' => $errors,
+                        ]); ?>
+                    <?php else: ?>
+                        <?= include_template('errors/not-found.php'); ?>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

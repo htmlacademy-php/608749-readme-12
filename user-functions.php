@@ -151,7 +151,7 @@ function get_sorting_link (string $active_filter, string $active_sort, string $s
  *
  * @return string
  */
-function createPostTemplate (array $post): string {
+function create_post_template (array $post): string {
     switch ($post['icon']) {
         case 'text':
             return include_template('post-details/text.php', [
@@ -183,22 +183,32 @@ function createPostTemplate (array $post): string {
 /**
  * Вспомогательная функция для генерации нужной формы под конкретный тип поста
  * @param string $active_type   тип поста для подбора необходимой формы
+ * @param array $errors         массив с ошибками валидации
  *
  * @return string
  */
-function createNewPostForm (string $active_type = 'text'): string {
+function add_form_fields(string $active_type = 'text', array $errors = []): string {
     switch ($active_type) {
-        case 'text':
-            return include_template('add-post/text.php');
         case 'quote':
-            return include_template('add-post/quote.php');
+            return include_template('add-post/quote.php', [
+                'errors' => $errors,
+            ]);
         case 'video':
-            return include_template('add-post/video.php');
+            return include_template('add-post/video.php', [
+            'errors' => $errors,
+            ]);
         case 'photo':
-            return include_template('add-post/photo.php');
+            return include_template('add-post/photo.php', [
+            'errors' => $errors,
+            ]);
         case 'link':
-            return include_template('add-post/link.php');
+            return include_template('add-post/link.php', [
+            'errors' => $errors,
+            ]);
+        case 'text':
         default:
-            return include_template('errors/not-found.php');
+            return include_template('add-post/text.php', [
+                'errors' => $errors,
+            ]);
     }
 }
