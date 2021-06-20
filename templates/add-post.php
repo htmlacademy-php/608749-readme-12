@@ -7,50 +7,26 @@
             <div class="adding-post__tabs-wrapper tabs">
                 <div class="adding-post__tabs filters">
                     <ul class="adding-post__tabs-list filters__list tabs__list">
-                        <li class="adding-post__tabs-item filters__item">
-                            <a class="adding-post__tabs-link filters__button filters__button--photo filters__button--active tabs__item tabs__item--active button">
-                                <svg class="filters__icon" width="22" height="18">
-                                    <use xlink:href="#icon-filter-photo"></use>
-                                </svg>
-                                <span>Фото</span>
-                            </a>
-                        </li>
-                        <li class="adding-post__tabs-item filters__item">
-                            <a class="adding-post__tabs-link filters__button filters__button--video tabs__item button" href="#">
-                                <svg class="filters__icon" width="24" height="16">
-                                    <use xlink:href="#icon-filter-video"></use>
-                                </svg>
-                                <span>Видео</span>
-                            </a>
-                        </li>
-                        <li class="adding-post__tabs-item filters__item">
-                            <a class="adding-post__tabs-link filters__button filters__button--text tabs__item button" href="#">
-                                <svg class="filters__icon" width="20" height="21">
-                                    <use xlink:href="#icon-filter-text"></use>
-                                </svg>
-                                <span>Текст</span>
-                            </a>
-                        </li>
-                        <li class="adding-post__tabs-item filters__item">
-                            <a class="adding-post__tabs-link filters__button filters__button--quote tabs__item button" href="#">
-                                <svg class="filters__icon" width="21" height="20">
-                                    <use xlink:href="#icon-filter-quote"></use>
-                                </svg>
-                                <span>Цитата</span>
-                            </a>
-                        </li>
-                        <li class="adding-post__tabs-item filters__item">
-                            <a class="adding-post__tabs-link filters__button filters__button--link tabs__item button" href="#">
-                                <svg class="filters__icon" width="21" height="18">
-                                    <use xlink:href="#icon-filter-link"></use>
-                                </svg>
-                                <span>Ссылка</span>
-                            </a>
-                        </li>
+                        <?php foreach ($content_types as $content_type):
+                            $id = $content_type['id'];
+                            $label = $content_type['type'];
+                            $type = $content_type['icon'];
+                        ?>
+                            <li class="adding-post__tabs-item filters__item">
+                                <a class="adding-post__tabs-link filters__button filters__button--<?= $type; ?>
+                                <?= $active_type === $type ? 'filters__button--active tabs__item--active' : '' ?> tabs__item button"
+                                   href="/new-post.php?type=<?= $type; ?>">
+                                    <svg class="filters__icon" width="22" height="18">
+                                        <use xlink:href="#icon-filter-<?= $type; ?>"></use>
+                                    </svg>
+                                    <span><?= $label ?></span>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
                     </ul>
                 </div>
                 <div class="adding-post__tab-content">
-
+                    <?= createNewPostForm($active_type ?: 'text'); ?>
                 </div>
             </div>
         </div>

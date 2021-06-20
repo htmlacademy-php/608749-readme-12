@@ -179,3 +179,26 @@ function createPostTemplate (array $post): string {
             return 'Недопустимый формат поста.';
     }
 }
+
+/**
+ * Вспомогательная функция для генерации нужной формы под конкретный тип поста
+ * @param string $active_type   тип поста для подбора необходимой формы
+ *
+ * @return string
+ */
+function createNewPostForm (string $active_type = 'text'): string {
+    switch ($active_type) {
+        case 'text':
+            return include_template('add-post/text.php');
+        case 'quote':
+            return include_template('add-post/quote.php');
+        case 'video':
+            return include_template('add-post/video.php');
+        case 'photo':
+            return include_template('add-post/photo.php');
+        case 'link':
+            return include_template('add-post/link.php');
+        default:
+            return include_template('errors/not-found.php');
+    }
+}

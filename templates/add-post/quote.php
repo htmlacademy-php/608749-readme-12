@@ -1,4 +1,4 @@
-<section class="adding-post__quote tabs__content">
+<section class="adding-post__quote tabs__content tabs__content--active">
     <h2 class="visually-hidden">Форма добавления цитаты</h2>
     <form class="adding-post__form form" action="#" method="post">
         <div class="form__text-inputs-wrapper">

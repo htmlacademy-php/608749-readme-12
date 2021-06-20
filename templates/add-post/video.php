@@ -1,4 +1,4 @@
-<section class="adding-post__video tabs__content">
+<section class="adding-post__video tabs__content tabs__content--active">
     <h2 class="visually-hidden">Форма добавления видео</h2>
     <form class="adding-post__form form" action="#" method="post" enctype="multipart/form-data">
         <div class="form__text-inputs-wrapper">

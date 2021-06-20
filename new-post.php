@@ -15,11 +15,24 @@ $user_name = 'Тина Кузьменко';
 $title = 'readme: добавить публикацию';
 $mysql_error = '';
 
+// получаем параметры из строки запроса
+$params = [
+    'active_type' => filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'text',
+];
+
+// получаем данные
+$result_content_types = get_content_types($link);
+
+// проверка данных
+$mysql_error = catch_mysql_error($result_content_types);
 
 // получаем шаблон для main
 $main = $mysql_error
     ? include_template('db-error.php', ['error' => $mysql_error])
-    : include_template('add-post.php', []);
+    : include_template('add-post.php', [
+        'content_types' => $result_content_types,
+        'active_type' => $params['active_type'],
+    ]);
 
 // составление layout страницы
 $layout = include_template('layout.php', [

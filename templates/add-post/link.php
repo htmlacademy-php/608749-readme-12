@@ -1,4 +1,4 @@
-<section class="adding-post__link tabs__content">
+<section class="adding-post__link tabs__content tabs__content--active">
     <h2 class="visually-hidden">Форма добавления ссылки</h2>
     <form class="adding-post__form form" action="#" method="post">
         <div class="form__text-inputs-wrapper">
