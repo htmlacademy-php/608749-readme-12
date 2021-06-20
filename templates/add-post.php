@@ -26,7 +26,10 @@
                     </ul>
                 </div>
                 <div class="adding-post__tab-content">
-                    <?= createNewPostForm($active_type ?: 'text'); ?>
+                    <?= include_template('add-post/form-layout.php', [
+                        'form_title' => $form_title,
+                        'active_type' => $active_type ?: 'text',
+                    ]) ?>
                 </div>
             </div>
         </div>

@@ -15,6 +15,14 @@ $user_name = 'Тина Кузьменко';
 $title = 'readme: добавить публикацию';
 $mysql_error = '';
 
+$form_titles = [
+    'text' => 'Форма добавления текста',
+    'quote' => 'Форма добавления цитаты',
+    'video' => 'Форма добавления видео',
+    'photo' => 'Форма добавления фото',
+    'link' => 'Форма добавления ссылки',
+];
+
 // получаем параметры из строки запроса
 $params = [
     'active_type' => filter_input(INPUT_GET, 'type', FILTER_SANITIZE_STRING) ?? 'text',
@@ -32,6 +40,7 @@ $main = $mysql_error
     : include_template('add-post.php', [
         'content_types' => $result_content_types,
         'active_type' => $params['active_type'],
+        'form_title' => $form_titles[$params['active_type']] ?: $form_titles['text'],
     ]);
 
 // составление layout страницы
