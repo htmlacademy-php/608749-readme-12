@@ -25,15 +25,21 @@ $form_titles = [
     'link' => 'Форма добавления ссылки',
 ];
 
+$form_validation = [
+    'text' => validate_text_post(),
+    'quote' => validate_quote_post(),
+    'video' => validate_video_post(),
+    'photo' => validate_photo_post(),
+    'link' => validate_link_post(),
+];
+
 // получаем данные
 $result_content_types = get_content_types($link);
-
-$active_type = isset($_POST['active-type']) ? $_POST['active-type'] : filter_input(INPUT_GET, 'type') ?? 'text';
+$active_type = $_POST['active-type'] ?? filter_input(INPUT_GET, 'type') ?? 'text';
 
 // проверка данных формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    $errors = validate_active_form($active_type, $_POST);
+    $errors = $form_validation[$active_type];
 
     if (empty($errors)) {
 
@@ -54,7 +60,7 @@ $main = $mysql_error
     : include_template('add-post.php', [
         'content_types' => $result_content_types,
         'active_type' => isset($form_titles[$active_type]) ? $active_type : 'error',
-        'form_title' => isset($form_titles[$active_type]) ? $form_titles[$active_type] : $form_titles['text'],
+        'form_title' => $form_titles[$active_type] ?? $form_titles['text'],
         'errors' => $errors,
     ]);
 
