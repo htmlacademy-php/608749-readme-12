@@ -195,15 +195,15 @@ function add_form_fields(string $active_type = 'text', array $errors = []): stri
             ]);
         case 'video':
             return include_template('add-post/video.php', [
-            'errors' => $errors,
+                'errors' => $errors,
             ]);
         case 'photo':
             return include_template('add-post/photo.php', [
-            'errors' => $errors,
+                'errors' => $errors,
             ]);
         case 'link':
             return include_template('add-post/link.php', [
-            'errors' => $errors,
+                'errors' => $errors,
             ]);
         case 'text':
         default:

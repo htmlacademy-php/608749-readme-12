@@ -19,6 +19,22 @@ function check_required(string $field_title, string $field_name): array {
 }
 
 /**
+ * Проверка заполненности хотя бы одного поля для фото
+ *
+ * @return array   Ассоциативный массив с описанием ошибки
+ */
+function check_photo_fields(): array {
+    if (empty($_POST['photo-heading']) && empty($_POST['userpic-file-photo'])) {
+        return [
+            'title' => 'Отсутствует фото',
+            'description' => "Пожалуйста, добавьте ссылку из интернета или загрузите файл",
+        ];
+    }
+
+    return [];
+}
+
+/**
  * Функция валидации поля с тегами
  * @return array  ассоциативный массив с ошибками
  */
@@ -60,14 +76,51 @@ function check_tags(): array {
 }
 
 /**
+ * Функция валидации ссылки на корректность
+ * @param string $field_name
+ * @return array    ассоциативный массив с ошибками
+ */
+function validate_url(string $field_name): array {
+    $error = [];
+
+    if (array_key_exists($field_name, $_POST) && !filter_var($_POST[$field_name], FILTER_VALIDATE_URL)) {
+        $error = [
+            'title' => 'Ссылка',
+            'description' => 'Значение поля должно быть корректным URL-адресом'
+        ];
+    }
+
+    return $error;
+}
+
+/**
+ * Функция валидации ссылки на корректность
+ * @param string $field_name
+ * @return array    ассоциативный массив с ошибками
+ */
+function validate_youtube(string $field_name): array {
+    $error = [];
+
+    if (array_key_exists($field_name, $_POST) && check_youtube_url($_POST[$field_name])) {
+        $error = [
+            'title' => 'Видео',
+            'description' => check_youtube_url($_POST[$field_name])
+        ];
+    }
+
+    return $error;
+}
+
+/**
  * Функция валидации общих полей формы
  * @return array  ассоциативный массив с ошибками
  */
 function validate_common_fields(): array {
     $errors = [];
+    $required = check_required('Заголовок', 'text-heading');
 
-    if (!empty(check_required('Заголовок', 'text-heading'))) {
-        $errors = array_merge($errors, [ 'text-heading' => check_required('Заголовок', 'text-heading') ]);
+    if (!empty($required)) {
+        $errors = array_merge($errors, [ 'text-heading' => $required ]);
     }
 
     if (!empty(check_tags())) {
@@ -122,18 +175,23 @@ function validate_quote_post(): array {
  * @return array   ассоциативный массив с ошибками
  */
 function validate_video_post(): array {
-    $errors = [
-        'text-heading' => [
-            check_required('Заголовок', 'text-heading')
-        ],
-        'video-heading' => [
-            check_required('Ссылка YouTube', 'video-heading')
-        ],
-        'post-tags' => check_tags(),
-    ];
+    $errors = [];
 
-    // @todo валидация ссылки на корректность (встроенная функция filter_var и FILTER_VALIDATE_URL)
-    // @todo проверка существования видео на платформе YouTube (check_youtube_url в helpers.php).
+    if (!empty(validate_common_fields())) {
+        $errors[] = validate_common_fields();
+    }
+
+    if (!empty(check_required('Ссылка YouTube', 'video-heading'))) {
+        $errors[] = [ 'video-heading' => check_required('Ссылка YouTube', 'video-heading') ];
+    }
+
+    if (validate_url('video-heading')) {
+        $errors[] = [ 'video-heading' => validate_url('video-heading') ];
+    }
+
+    if (validate_youtube('video-heading')) {
+        $errors[] = [ 'video-heading' => validate_youtube('video-heading') ];
+    }
 
     return $errors;
 }
@@ -143,20 +201,22 @@ function validate_video_post(): array {
  * @return array   ассоциативный массив с ошибками
  */
 function validate_photo_post(): array {
-    $errors = [
-        'text-heading' => [
-            check_required('Заголовок', 'text-heading')
-        ],
-        'photo-heading' => [
-            check_required('Отсутствует картинка', 'photo-heading')
-        ],
-        'post-tags' => check_tags(),
-    ];
+    $errors = [];
 
-    // @todo проверка что поле со ссылкой или поле с картинкой заполнены (одно из)
+    if (!empty(validate_common_fields())) {
+        $errors[] = validate_common_fields();
+    }
+
+    if (!empty(check_photo_fields())) {
+        $errors[] = [ 'photo-heading' => check_photo_fields() ];
+    }
+
+    if (validate_url('photo-heading')) {
+        $errors[] = [ 'photo-heading' => validate_url('photo-heading') ];
+    }
+
     // @todo если заполнены оба, то обнулить "Ссылка из интернета" и сохранить картинку с компьютера
     // @todo проверить MIME-тип загруженного файла (png, jpeg, gif) и переместить картинку в папку uploads
-    // @todo валидация ссылки на корректность (встроенная функция filter_var и FILTER_VALIDATE_URL)
     // @todo сохранить фото по ссылке (file_get_contents) и добавить в таблицу или ошибка валидации, если не удалось
 
     return $errors;
@@ -167,17 +227,19 @@ function validate_photo_post(): array {
  * @return array   ассоциативный массив с ошибками
  */
 function validate_link_post() {
-    $errors = [
-        'text-heading' => [
-            check_required('Заголовок', 'text-heading')
-        ],
-        'post-link' => [
-            check_required('Ссылка', 'post-link')
-        ],
-        'post-tags' => check_tags(),
-    ];
+    $errors = [];
 
-    // @todo валидация ссылки на корректность (встроенная функция filter_var и FILTER_VALIDATE_URL)
+    if (!empty(validate_common_fields())) {
+        $errors[] = validate_common_fields();
+    }
+
+    if (!empty(check_required('Ссылка', 'post-link'))) {
+        $errors[] = [ 'post-link' => check_required('Ссылка', 'post-link') ];
+    }
+
+    if (validate_url('post-link')) {
+        $errors[] = [ 'post-link' => validate_url('post-link') ];
+    }
 
     return $errors;
 }

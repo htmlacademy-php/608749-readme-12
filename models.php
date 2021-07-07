@@ -236,3 +236,13 @@ function get_post_comments (
 
     return get_data($link, $sql, [$post_id]);
 }
+
+//function set_post ($data) {
+//    $sql =
+//        'INSERT INTO post (title, content, cite_author, cover, views, user_id, content_type_id)
+//        VALUES ()';
+//}
+//
+//function set_tag () {
+//
+//}

@@ -153,6 +153,10 @@ function include_template($name, array $data = [])
  */
 function check_youtube_url($url)
 {
+    if (!$url) {
+        return 'Не корректная ссылка';
+    }
+
     $id = extract_youtube_id($url);
 
     set_error_handler(function () {}, E_WARNING);
