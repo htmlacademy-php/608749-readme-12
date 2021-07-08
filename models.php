@@ -27,6 +27,39 @@ function get_data(
 }
 
 /**
+ * Адаптер для подготовки данных формы к отправке в базу данных
+ *
+ * @param string $active_type   тип поста
+ * @param array $data           данные от пользователя
+ * @return array                массив с полями для отправки
+ */
+function get_request_content(string $active_type, array $data): array {
+    switch ($active_type) {
+        case 'quote':
+            return [
+                'content' => $data['cite-text'],
+                'cite_author' => $data['quote-author'],
+            ];
+        case 'video':
+            return [
+                'content' => $data['video-heading'],
+            ];
+        case 'photo':
+            // @todo здесь нужно сделать условие, в зависимости от того, какие данные у нас есть
+            return [];
+        case 'link':
+            return [
+                'content' => $data['post-link'],
+            ];
+        case 'text':
+        default:
+            return [
+                'content' => $data['post-text'],
+            ];
+    }
+}
+
+/**
  * Функция для получения всех типов контента из базы данных
  * @param   mysqli $link   Объект mysqli
  *
@@ -58,7 +91,7 @@ function get_popular_posts(
     $direction = strtoupper($params['direction']);
     $sort = " ORDER BY $sort_param $direction";
     $sql =
-        'SELECT p.id, date, title, content, cite_author, cover, views, login, icon, avatar, pl.likes, c.comments
+        'SELECT p.id, date, title, content, cite_author, views, login, icon, avatar, pl.likes, c.comments
         FROM post p
         JOIN user u ON p.user_id = u.id
         JOIN content_type ct ON p.content_type_id = ct.id
@@ -237,12 +270,48 @@ function get_post_comments (
     return get_data($link, $sql, [$post_id]);
 }
 
-//function set_post ($data) {
-//    $sql =
-//        'INSERT INTO post (title, content, cite_author, cover, views, user_id, content_type_id)
-//        VALUES ()';
-//}
-//
+/**
+ * Функция для отправки данных нового поста в базу данных
+ *
+ * @param mysqli $link          Объект mysql
+ * @param string $active_type   Тип поста
+ * @param array $data           Данные для отправки
+ *
+ * @return int|string          id поста или ошибка
+ */
+function set_post (mysqli $link, string $active_type, array $data) {
+    $content = get_request_content($active_type, $data);
+
+    $request_data = [
+        'title' => $data['text-heading'],
+        'content' => $content['content'],
+        'cite_author' => $content['cite_author'] ?? '',
+        'views' => 0,
+        'user_id' => 1,
+        'content_type_id' => 3,
+    ];
+
+    $query = '';
+
+    foreach ($request_data as $key => $item) {
+        $query .= !$query ? "$key = ?" :  ", " . "$key = ?";
+    }
+
+    $sql = "INSERT INTO post SET $query;";
+
+    print_r($sql);
+    $stmt = db_get_prepare_stmt(
+        $link,
+        $sql,
+        $request_data);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_get_result($stmt);
+
+    return mysqli_insert_id($link);
+}
+
 //function set_tag () {
 //
 //}
+
+

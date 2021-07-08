@@ -24,10 +24,29 @@ function check_required(string $field_title, string $field_name): array {
  * @return array   Ассоциативный массив с описанием ошибки
  */
 function check_photo_fields(): array {
-    if (empty($_POST['photo-heading']) && empty($_POST['userpic-file-photo'])) {
+    if (empty($_POST['photo-heading']) && empty($_FILES['userpic-file-photo'])) {
         return [
             'title' => 'Отсутствует фото',
             'description' => "Пожалуйста, добавьте ссылку из интернета или загрузите файл",
+        ];
+    }
+
+    return [];
+}
+
+/**
+ * Проверка валидности загружаемого файла
+ *
+ * @return array
+ */
+function validate_photo_format(): array {
+    $file_type = $_FILES['userpic-file-photo']['type'];
+    $valid_formats = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+
+    if (in_array($file_type, $valid_formats)) {
+        return [
+            'title' => 'Фото',
+            'description' => 'Неверный формат загружаемого файла. Допустимые форматы: ' . implode(' , ', $valid_formats)
         ];
     }
 
@@ -187,10 +206,10 @@ function validate_video_post(): array {
 
     if (validate_url('video-heading')) {
         $errors[] = [ 'video-heading' => validate_url('video-heading') ];
-    }
-
-    if (validate_youtube('video-heading')) {
-        $errors[] = [ 'video-heading' => validate_youtube('video-heading') ];
+    } else {
+        if (validate_youtube('video-heading')) {
+            $errors[] = [ 'video-heading' => validate_youtube('video-heading') ];
+        }
     }
 
     return $errors;
@@ -203,6 +222,10 @@ function validate_video_post(): array {
 function validate_photo_post(): array {
     $errors = [];
 
+    $both_filled = !empty($_POST['photo-heading']) && !empty($_FILES['userpic-file-photo']);
+    $file_filled = empty($_POST['photo-heading']) && !empty($_FILES['userpic-file-photo']);
+    $url_filled = !empty($_POST['photo-heading']) && empty($_FILES['userpic-file-photo']);
+
     if (!empty(validate_common_fields())) {
         $errors[] = validate_common_fields();
     }
@@ -211,8 +234,16 @@ function validate_photo_post(): array {
         $errors[] = [ 'photo-heading' => check_photo_fields() ];
     }
 
-    if (validate_url('photo-heading')) {
-        $errors[] = [ 'photo-heading' => validate_url('photo-heading') ];
+    if ($url_filled) {
+        if (validate_url('photo-heading')) {
+            $errors[] = [ 'photo-heading' => validate_url('photo-heading') ];
+        }
+    }
+
+    if ($both_filled || $file_filled) {
+        if (!empty(validate_photo_format())) {
+            $errors[] = [ 'userpic-file-photo' => validate_photo_format() ];
+        }
     }
 
     // @todo если заполнены оба, то обнулить "Ссылка из интернета" и сохранить картинку с компьютера

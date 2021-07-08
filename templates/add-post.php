@@ -31,6 +31,7 @@
                             'form_title' => $form_title,
                             'active_type' => $active_type,
                             'errors' => $errors,
+                            'values' => $values,
                         ]); ?>
                     <?php else: ?>
                         <?= include_template('errors/not-found.php'); ?>

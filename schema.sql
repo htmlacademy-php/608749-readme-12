@@ -23,7 +23,6 @@ CREATE TABLE post
     title           VARCHAR(256) NOT NULL,
     content         TEXT,
     cite_author     VARCHAR(128),
-    cover           VARCHAR(256),
     views           INT,
     user_id         INT  NOT NULL,
     content_type_id INT

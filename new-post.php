@@ -36,6 +36,7 @@ $form_validation = [
 // получаем данные
 $result_content_types = get_content_types($link);
 $active_type = $_POST['active-type'] ?? filter_input(INPUT_GET, 'type') ?? 'text';
+$values = isset($_POST) && !empty($_POST) ? $_POST : [];
 
 // проверка данных формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -43,11 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
 
-        // @todo делаем запрос на добавление поста в БД
+        $post_id = set_post($link, $active_type, $values);
         // @todo делаем запрос на добавление тэгов в БД
 
-        // $URL = '/post.php?id=' . $post_id;
-        // header("Location: $URL");
+         $URL = '/post.php?id=' . $post_id;
+         header("Location: $URL");
     }
 }
 
@@ -62,6 +63,7 @@ $main = $mysql_error
         'active_type' => isset($form_titles[$active_type]) ? $active_type : 'error',
         'form_title' => $form_titles[$active_type] ?? $form_titles['text'],
         'errors' => $errors,
+        'values' => $values,
     ]);
 
 // составление layout страницы

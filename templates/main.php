@@ -120,7 +120,7 @@
                             <div class="post-video__block">
                                 <div class="post-video__preview">
                                     <?= check_youtube_url($post_content) ?>
-                                    <img src="<?= $post['cover']; ?>" alt="Превью к видео" width="360" height="188">
+                                    <?= embed_youtube_cover($post_content); ?>
                                 </div>
                                 <a href="/post.php?id=<?= $post['id'] ?>" class="post-video__play-big button">
                                     <svg class="post-video__play-big-icon" width="14" height="14">

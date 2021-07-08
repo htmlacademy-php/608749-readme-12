@@ -184,31 +184,27 @@ function create_post_template (array $post): string {
  * Вспомогательная функция для генерации нужной формы под конкретный тип поста
  * @param string $active_type   тип поста для подбора необходимой формы
  * @param array $errors         массив с ошибками валидации
+ * @param array $values         массив с сохраненными ранее данными формы
  *
  * @return string
  */
-function add_form_fields(string $active_type = 'text', array $errors = []): string {
+function add_form_fields(string $active_type = 'text', array $errors = [], array $values = []): string {
+    $params = [
+        'errors' => $errors,
+        'values' => $values,
+    ];
+
     switch ($active_type) {
         case 'quote':
-            return include_template('add-post/quote.php', [
-                'errors' => $errors,
-            ]);
+            return include_template('add-post/quote.php', $params);
         case 'video':
-            return include_template('add-post/video.php', [
-                'errors' => $errors,
-            ]);
+            return include_template('add-post/video.php', $params);
         case 'photo':
-            return include_template('add-post/photo.php', [
-                'errors' => $errors,
-            ]);
+            return include_template('add-post/photo.php', $params);
         case 'link':
-            return include_template('add-post/link.php', [
-                'errors' => $errors,
-            ]);
+            return include_template('add-post/link.php', $params);
         case 'text':
         default:
-            return include_template('add-post/text.php', [
-                'errors' => $errors,
-            ]);
+            return include_template('add-post/text.php', $params);
     }
 }

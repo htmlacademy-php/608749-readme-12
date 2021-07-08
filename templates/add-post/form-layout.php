@@ -6,16 +6,29 @@
             <div class="form__text-inputs">
                 <div class="adding-post__input-wrapper form__input-wrapper">
                     <label class="adding-post__label form__label" for="text-heading">Заголовок <span class="form__input-required">*</span></label>
-                    <div class="form__input-section <?= !empty(array_column($errors, 'text-heading')) ? 'form__input-section--error' : '' ?>">
-                        <input class="adding-post__input form__input" id="text-heading" type="text" name="text-heading" placeholder="Введите заголовок">
+                    <div class="form__input-section <?= !empty(array_column($errors, 'text-heading')) ? 'form__input-section--error' : ''; ?>">
+                        <input
+                            class="adding-post__input form__input"
+                            id="text-heading"
+                            type="text"
+                            name="text-heading"
+                            placeholder="Введите заголовок"
+                            value="<?= $values['text-heading'] ?? ''; ?>"
+                        >
                         <?= !empty(array_column($errors, 'text-heading')) ? show_field_errors(array_column($errors, 'text-heading')) : ''; ?>
                     </div>
                 </div>
-                <?= add_form_fields($active_type, $errors); ?>
+                <?= add_form_fields($active_type, $errors, $values); ?>
                 <div class="adding-post__input-wrapper form__input-wrapper">
                     <label class="adding-post__label form__label" for="post-tags">Теги</label>
-                    <div class="form__input-section">
-                        <input class="adding-post__input form__input" id="post-tags" type="text" name="post-tags" placeholder="Введите теги">
+                    <div class="form__input-section <?= !empty(array_column($errors, 'post-tags')) ? 'form__input-section--error' : ''?>">
+                        <input
+                            class="adding-post__input form__input"
+                            id="post-tags" type="text"
+                            name="post-tags"
+                            placeholder="Введите теги"
+                            value="<?= $values['post-tags'] ?? ''; ?>"
+                        >
                         <?= !empty(array_column($errors, 'post-tags')) ? show_field_errors(array_column($errors, 'post-tags')) : ''; ?>
                     </div>
                 </div>
