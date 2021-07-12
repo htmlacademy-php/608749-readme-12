@@ -37,15 +37,16 @@ $form_validation = [
 $result_content_types = get_content_types($link);
 $active_type = $_POST['active-type'] ?? filter_input(INPUT_GET, 'type') ?? 'text';
 $values = isset($_POST) && !empty($_POST) ? $_POST : [];
+$photos = isset($_FILES) && !empty($_FILES) ? $_FILES : [];
 
 // проверка данных формы
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = $form_validation[$active_type];
 
     if (empty($errors)) {
-        $post_id = set_post($link, $active_type, $values);
+        $post_id = set_post($link, $active_type, $values, $photos);
 
-        if (isset($values['post-tags'])) {
+        if (isset($values['post-tags']) && !empty($values['post-tags'])) {
             $hashtags = array_unique(explode(' ', $values['post-tags']));
 
             foreach ($hashtags as $hashtag) {

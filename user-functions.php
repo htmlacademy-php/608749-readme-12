@@ -208,3 +208,61 @@ function add_form_fields(string $active_type = 'text', array $errors = [], array
             return include_template('add-post/text.php', $params);
     }
 }
+
+/**
+ * Функция для проверки наличия ошибок у поля и отрисовки блока с ошибками,
+ * если они есть
+ * @param array $field_errors     массив с ошибками
+ *
+ * @return string      разметка показа ошибки
+ */
+function show_field_errors(array $field_errors): string {
+    $errors = '';
+
+    if (empty($field_errors)) {
+        return $errors;
+    }
+
+    foreach ($field_errors as $error) {
+        $errors = $errors . '<h3 class="form__error-title">' . $error['title'] . '</h3>
+                <p class="form__error-desc">' . $error['description'] . '</p>';
+    }
+
+    return '<button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
+        <div class="form__error-text">' . $errors . '</div>';
+}
+
+/**
+ * Вспомогательная функция для сохранения фото в папку uploads со стороннего ресурса
+ * @param string $photo_link   Ссылка на фотографию на стороннем ресурсе
+ *
+ * @return  string      Ссылка на фото в папке uploads
+ */
+function save_photo_from_url (string $photo_link): string {
+    $image = file_get_contents($photo_link);
+
+    $file_name = basename($photo_link);
+    $file_path = '/uploads/' . $file_name;
+
+    file_put_contents($file_path, $image);
+
+    // @todo понять почему картинки не грузятся куда надо и не генерируется нормальный url
+    return $file_path;
+}
+
+/**
+ * Вспомогательная функция для сохранения фото в папку uploads
+ * @param array $photo   ассоциативный массив с фото
+ *
+ * @return  string      Ссылка на фото в папке uploads
+ */
+function save_photo (array $photo): string {
+    $tmp_name = $photo['tmp_name'];
+    $file_name = basename($tmp_name);
+    $file_path = __DIR__ . '/uploads/';
+
+    move_uploaded_file($tmp_name, $file_path . $file_name);
+
+    // @todo понять почему картинки не грузятся куда надо и не генерируется нормальный url
+    return $file_path . $file_name;
+}

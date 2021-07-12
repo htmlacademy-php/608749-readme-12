@@ -19,22 +19,6 @@ function validate_required(string $field_title, string $field_name): array {
 }
 
 /**
- * Проверка заполненности хотя бы одного поля для фото
- *
- * @return array   Ассоциативный массив с описанием ошибки
- */
-function validate_photo_fields(): array {
-    if (empty($_POST['photo-heading']) && empty($_FILES['userpic-file-photo'])) {
-        return [
-            'title' => 'Отсутствует фото',
-            'description' => "Пожалуйста, добавьте ссылку из интернета или загрузите файл",
-        ];
-    }
-
-    return [];
-}
-
-/**
  * Проверка валидности загружаемого файла
  *
  * @return array
@@ -222,33 +206,33 @@ function validate_video_post(): array {
 function validate_photo_post(): array {
     $errors = [];
 
-    $both_filled = !empty($_POST['photo-heading']) && !empty($_FILES['userpic-file-photo']);
-    $file_filled = empty($_POST['photo-heading']) && !empty($_FILES['userpic-file-photo']);
-    $url_filled = !empty($_POST['photo-heading']) && empty($_FILES['userpic-file-photo']);
+    $file_filled = isset($_FILES['userpic-file-photo']) && $_FILES['userpic-file-photo']['error'] === 0;
+    $url_filled = isset($_POST['photo-heading']);
 
     if (!empty(validate_common_fields())) {
         $errors[] = validate_common_fields();
     }
 
-    if (!empty(validate_photo_fields())) {
-        $errors[] = [ 'photo-heading' => validate_photo_fields() ];
+    // @todo разобраться с проверкой (пока не работает)
+    if (!$url_filled && !$file_filled) {
+        $errors[] = [ 'photo-heading' => [
+            'title' => 'Отсутствует фото',
+            'description' => "Пожалуйста, добавьте ссылку из интернета или загрузите файл",
+        ]];
     }
 
-    if ($url_filled) {
+    if ($url_filled && !$file_filled) {
         if (validate_url('photo-heading')) {
             $errors[] = [ 'photo-heading' => validate_url('photo-heading') ];
         }
     }
 
-    if ($both_filled || $file_filled) {
+    // @todo разобраться с проверкой
+    if ($file_filled) {
         if (!empty(validate_photo_format())) {
             $errors[] = [ 'userpic-file-photo' => validate_photo_format() ];
         }
     }
-
-    // @todo если заполнены оба, то обнулить "Ссылка из интернета" и сохранить картинку с компьютера
-    // @todo проверить MIME-тип загруженного файла (png, jpeg, gif) и переместить картинку в папку uploads
-    // @todo сохранить фото по ссылке (file_get_contents) и добавить в таблицу или ошибка валидации, если не удалось
 
     return $errors;
 }
@@ -273,27 +257,4 @@ function validate_link_post(): array {
     }
 
     return $errors;
-}
-
-/**
- * Функция для проверки наличия ошибок у поля и отрисовки блока с ошибками,
- * если они есть
- * @param array $field_errors     массив с ошибками
- *
- * @return string      разметка показа ошибки
- */
-function show_field_errors(array $field_errors): string {
-    $errors = '';
-
-    if (empty($field_errors)) {
-        return $errors;
-    }
-
-    foreach ($field_errors as $error) {
-        $errors = $errors . '<h3 class="form__error-title">' . $error['title'] . '</h3>
-                <p class="form__error-desc">' . $error['description'] . '</p>';
-    }
-
-    return '<button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
-        <div class="form__error-text">' . $errors . '</div>';
 }

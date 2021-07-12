@@ -31,9 +31,11 @@ function get_data(
  *
  * @param string $active_type   тип поста
  * @param array $data           данные от пользователя
+ * @param array $photo          загруженное фото
+ *
  * @return array                массив с полями для отправки
  */
-function get_request_content(string $active_type, array $data): array {
+function get_request_content(string $active_type, array $data, array $photo): array {
     switch ($active_type) {
         case 'quote':
             return [
@@ -45,8 +47,11 @@ function get_request_content(string $active_type, array $data): array {
                 'content' => $data['video-heading'],
             ];
         case 'photo':
-            // @todo здесь нужно сделать условие, в зависимости от того, какие данные у нас есть
-            return [];
+            return empty($photo) ? [
+                'content' => save_photo_from_url($data['photo-heading'])
+            ] : [
+                'content' => save_photo($photo['userpic-file-photo'])
+            ];
         case 'link':
             return [
                 'content' => $data['post-link'],
@@ -290,11 +295,12 @@ function get_post_comments (
  * @param mysqli $link          Объект mysql
  * @param string $active_type   Тип поста
  * @param array $data           Данные для отправки
+ * @param array $photos         Данные фотографии
  *
  * @return int|string          id поста или ошибка
  */
-function set_post (mysqli $link, string $active_type, array $data) {
-    $content = get_request_content($active_type, $data);
+function set_post (mysqli $link, string $active_type, array $data, array $photos) {
+    $content = get_request_content($active_type, $data, $photos);
     $content_type_id = get_post_content_type($link, $active_type)[0];
 
     $request_data = [
