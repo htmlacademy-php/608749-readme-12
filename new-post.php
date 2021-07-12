@@ -43,9 +43,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $errors = $form_validation[$active_type];
 
     if (empty($errors)) {
-
         $post_id = set_post($link, $active_type, $values);
-        // @todo делаем запрос на добавление тэгов в БД
+
+        if (isset($values['post-tags'])) {
+            $hashtags = array_unique(explode(' ', $values['post-tags']));
+
+            foreach ($hashtags as $hashtag) {
+                $tag = substr($hashtag, 1);
+                set_post_tag($link, $post_id, $tag);
+            }
+        }
 
          $URL = '/post.php?id=' . $post_id;
          header("Location: $URL");

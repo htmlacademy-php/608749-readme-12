@@ -72,6 +72,20 @@ function get_content_types(mysqli $link) {
 }
 
 /**
+ * Функция для получения id типа контента у поста
+ * @param   mysqli $link   Объект mysqli
+ * @param   string $type   Тип контента
+ *
+ * @return  array|string   ассоциативный массив с данными или сообщение об ошибке
+ */
+function get_post_content_type(mysqli $link, string $type) {
+    $sql = 'SELECT id FROM content_type
+            WHERE icon = ?';
+
+    return get_data($link, $sql, [ $type ]);
+}
+
+/**
  * Функция для получения популярных постов из базы данных
  * @param   mysqli $link        Объект mysql
  * @param   array $params       ассоциативный массив с параметрами поиска:
@@ -281,6 +295,7 @@ function get_post_comments (
  */
 function set_post (mysqli $link, string $active_type, array $data) {
     $content = get_request_content($active_type, $data);
+    $content_type_id = get_post_content_type($link, $active_type)[0];
 
     $request_data = [
         'title' => $data['text-heading'],
@@ -288,7 +303,7 @@ function set_post (mysqli $link, string $active_type, array $data) {
         'cite_author' => $content['cite_author'] ?? '',
         'views' => 0,
         'user_id' => 1,
-        'content_type_id' => 3,
+        'content_type_id' => $content_type_id['id'],
     ];
 
     $query = '';
@@ -299,19 +314,53 @@ function set_post (mysqli $link, string $active_type, array $data) {
 
     $sql = "INSERT INTO post SET $query;";
 
-    print_r($sql);
-    $stmt = db_get_prepare_stmt(
-        $link,
-        $sql,
-        $request_data);
+    $stmt = db_get_prepare_stmt($link, $sql, $request_data);
     mysqli_stmt_execute($stmt);
     mysqli_stmt_get_result($stmt);
 
     return mysqli_insert_id($link);
 }
 
-//function set_tag () {
-//
-//}
+/**
+ * Функция для отправки нового тэга в базу данных
+ *
+ * @param mysqli $link          Объект mysql
+ * @param int $post_id          id поста
+ * @param string $tag           Хэштег, который нужно добавить
+ */
+function set_post_tag (mysqli $link, int $post_id, string $tag) {
 
+    $hashtag_id = get_hashtag_id($link, $tag);
 
+    $sql = "INSERT INTO post_hashtag SET post_id = ?, hashtag_id = ?";
+
+    $stmt = db_get_prepare_stmt($link, $sql, [ $post_id, $hashtag_id ]);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_get_result($stmt);
+}
+
+/**
+ * Функция для получения id нужного хэштега путем получения его из БД или добавления
+ * нового, в случае, если такого хэштега еще нет
+ *
+ * @param mysqli $link          Объект mysql
+ * @param string $hashtag       Хэштег, который нужно добавить
+ */
+function get_hashtag_id(mysqli $link, string $hashtag) {
+    $sql = "SELECT id FROM hashtag h
+            WHERE h.hashtag = ?";
+
+    $id = get_data($link, $sql, [ $hashtag ]);
+
+    if (!empty($id)) {
+        return $id[0]['id'];
+    }
+
+    $sql = "INSERT INTO hashtag SET hashtag = ?";
+
+    $stmt = db_get_prepare_stmt($link, $sql, [ $hashtag ]);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_get_result($stmt);
+
+    return mysqli_insert_id($link);
+}

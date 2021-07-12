@@ -7,7 +7,7 @@
  *
  * @return array   Ассоциативный массив с описанием ошибки
  */
-function check_required(string $field_title, string $field_name): array {
+function validate_required(string $field_title, string $field_name): array {
     if (empty($_POST[$field_name])) {
         return [
             'title' => $field_title,
@@ -23,7 +23,7 @@ function check_required(string $field_title, string $field_name): array {
  *
  * @return array   Ассоциативный массив с описанием ошибки
  */
-function check_photo_fields(): array {
+function validate_photo_fields(): array {
     if (empty($_POST['photo-heading']) && empty($_FILES['userpic-file-photo'])) {
         return [
             'title' => 'Отсутствует фото',
@@ -57,7 +57,7 @@ function validate_photo_format(): array {
  * Функция валидации поля с тегами
  * @return array  ассоциативный массив с ошибками
  */
-function check_tags(): array {
+function validate_tags(): array {
     $field_title = 'Теги';
     $field_name = 'post-tags';
     $errors = [];
@@ -136,14 +136,14 @@ function validate_youtube(string $field_name): array {
  */
 function validate_common_fields(): array {
     $errors = [];
-    $required = check_required('Заголовок', 'text-heading');
+    $required = validate_required('Заголовок', 'text-heading');
 
     if (!empty($required)) {
         $errors = array_merge($errors, [ 'text-heading' => $required ]);
     }
 
-    if (!empty(check_tags())) {
-        $errors = array_merge($errors, [ 'post-tags' => check_tags()]);
+    if (!empty(validate_tags())) {
+        $errors = array_merge($errors, [ 'post-tags' => validate_tags()]);
     }
 
     return $errors;
@@ -160,8 +160,8 @@ function validate_text_post(): array {
         $errors[] = validate_common_fields();
     }
 
-    if (!empty(check_required('Текст поста', 'post-text'))) {
-        $errors[] = ['post-text' => check_required('Текст поста', 'post-text') ];
+    if (!empty(validate_required('Текст поста', 'post-text'))) {
+        $errors[] = ['post-text' => validate_required('Текст поста', 'post-text') ];
     }
 
     return $errors;
@@ -178,12 +178,12 @@ function validate_quote_post(): array {
         $errors[] = validate_common_fields();
     }
 
-    if (!empty(check_required('Текст цитаты', 'cite-text'))) {
-        $errors[] = ['cite-text' => check_required('Текст цитаты', 'cite-text') ];
+    if (!empty(validate_required('Текст цитаты', 'cite-text'))) {
+        $errors[] = ['cite-text' => validate_required('Текст цитаты', 'cite-text') ];
     }
 
-    if (!empty(check_required('Автор', 'quote-author'))) {
-        $errors[] = ['quote-author' => check_required('Автор', 'quote-author') ];
+    if (!empty(validate_required('Автор', 'quote-author'))) {
+        $errors[] = ['quote-author' => validate_required('Автор', 'quote-author') ];
     }
 
     return $errors;
@@ -200,8 +200,8 @@ function validate_video_post(): array {
         $errors[] = validate_common_fields();
     }
 
-    if (!empty(check_required('Ссылка YouTube', 'video-heading'))) {
-        $errors[] = [ 'video-heading' => check_required('Ссылка YouTube', 'video-heading') ];
+    if (!empty(validate_required('Ссылка YouTube', 'video-heading'))) {
+        $errors[] = [ 'video-heading' => validate_required('Ссылка YouTube', 'video-heading') ];
     }
 
     if (validate_url('video-heading')) {
@@ -230,8 +230,8 @@ function validate_photo_post(): array {
         $errors[] = validate_common_fields();
     }
 
-    if (!empty(check_photo_fields())) {
-        $errors[] = [ 'photo-heading' => check_photo_fields() ];
+    if (!empty(validate_photo_fields())) {
+        $errors[] = [ 'photo-heading' => validate_photo_fields() ];
     }
 
     if ($url_filled) {
@@ -257,15 +257,15 @@ function validate_photo_post(): array {
  * Функция валидации полей формы со ссылкой
  * @return array   ассоциативный массив с ошибками
  */
-function validate_link_post() {
+function validate_link_post(): array {
     $errors = [];
 
     if (!empty(validate_common_fields())) {
         $errors[] = validate_common_fields();
     }
 
-    if (!empty(check_required('Ссылка', 'post-link'))) {
-        $errors[] = [ 'post-link' => check_required('Ссылка', 'post-link') ];
+    if (!empty(validate_required('Ссылка', 'post-link'))) {
+        $errors[] = [ 'post-link' => validate_required('Ссылка', 'post-link') ];
     }
 
     if (validate_url('post-link')) {
