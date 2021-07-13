@@ -5,7 +5,7 @@
             <h2 class="visually-hidden">Публикация</h2>
             <div class="post-details__wrapper post-<?= $post['icon']; ?>">
                 <div class="post-details__main-block post post--details">
-                    <?= createPostTemplate($post); ?>
+                    <?= create_post_template($post); ?>
                     <div class="post__indicators">
                         <div class="post__buttons">
                             <a class="post__indicator post__indicator--likes button" href="#" title="Лайк">
@@ -63,7 +63,7 @@
                         <div class="comments__list-wrapper">
                             <ul class="comments__list">
                                 <?php foreach ($comments as $comment): ?>
-                                    <?= include_template('post/comment.php', $comment); ?>
+                                    <?= include_template('post-details/comment.php', $comment); ?>
                                 <?php endforeach; ?>
                             </ul>
                             <a class="comments__more-link" href="#">
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </div>
-                <?= include_template('post/user.php', [
+                <?= include_template('post-details/user.php', [
                     'login' => $user['login'],
                     'avatar' => $user['avatar'],
                     'registration' => $user['registration'],

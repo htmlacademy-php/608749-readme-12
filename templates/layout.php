@@ -102,7 +102,7 @@
                             </div>
                         </li>
                         <li>
-                            <a class="header__post-button button button--transparent" href="adding-post.html">Пост</a>
+                            <a class="header__post-button button button--transparent" href="new-post.php">Пост</a>
                         </li>
                     </ul>
                 </nav>

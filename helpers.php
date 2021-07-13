@@ -153,6 +153,10 @@ function include_template($name, array $data = [])
  */
 function check_youtube_url($url)
 {
+    if (!$url) {
+        return 'Не корректная ссылка';
+    }
+
     $id = extract_youtube_id($url);
 
     set_error_handler(function () {}, E_WARNING);
@@ -220,11 +224,11 @@ function extract_youtube_id($youtube_url)
     $parts = parse_url($youtube_url);
 
     if ($parts) {
-        if ($parts['path'] == '/watch') {
+        if (isset($parts['path']) && $parts['path'] == '/watch') {
             parse_str($parts['query'], $vars);
             $id = $vars['v'] ?? null;
         } else {
-            if ($parts['host'] == 'youtu.be') {
+            if (isset($parts['host']) && $parts['host'] == 'youtu.be') {
                 $id = substr($parts['path'], 1);
             }
         }

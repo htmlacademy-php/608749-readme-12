@@ -151,31 +151,118 @@ function get_sorting_link (string $active_filter, string $active_sort, string $s
  *
  * @return string
  */
-function createPostTemplate (array $post): string {
+function create_post_template (array $post): string {
     switch ($post['icon']) {
         case 'text':
-            return include_template('post/text.php', [
+            return include_template('post-details/text.php', [
                 'text' => $post['content'],
             ]);
         case 'quote':
-            return include_template('post/quote.php', [
+            return include_template('post-details/quote.php', [
                 'text' => $post['content'],
                 'author' => $post['cite_author']
             ]);
         case 'video':
-            return include_template('post/video.php', [
+            return include_template('post-details/video.php', [
                 'youtube_url' => $post['content'],
             ]);
         case 'photo':
-            return include_template('post/photo.php', [
+            return include_template('post-details/photo.php', [
                 'img_url' => $post['content'],
             ]);
         case 'link':
-            return include_template('post/link.php', [
+            return include_template('post-details/link.php', [
                 'url' => $post['content'],
                 'title' => $post['title'],
             ]);
         default:
             return 'Недопустимый формат поста.';
     }
+}
+
+/**
+ * Вспомогательная функция для генерации нужной формы под конкретный тип поста
+ * @param string $active_type   тип поста для подбора необходимой формы
+ * @param array $errors         массив с ошибками валидации
+ * @param array $values         массив с сохраненными ранее данными формы
+ *
+ * @return string
+ */
+function add_form_fields(string $active_type = 'text', array $errors = [], array $values = []): string {
+    $params = [
+        'errors' => $errors,
+        'values' => $values,
+    ];
+
+    switch ($active_type) {
+        case 'quote':
+            return include_template('add-post/quote.php', $params);
+        case 'video':
+            return include_template('add-post/video.php', $params);
+        case 'photo':
+            return include_template('add-post/photo.php', $params);
+        case 'link':
+            return include_template('add-post/link.php', $params);
+        case 'text':
+        default:
+            return include_template('add-post/text.php', $params);
+    }
+}
+
+/**
+ * Функция для проверки наличия ошибок у поля и отрисовки блока с ошибками,
+ * если они есть
+ * @param array $field_errors     массив с ошибками
+ *
+ * @return string      разметка показа ошибки
+ */
+function show_field_errors(array $field_errors): string {
+    $errors = '';
+
+    if (empty($field_errors)) {
+        return $errors;
+    }
+
+    foreach ($field_errors as $error) {
+        $errors = $errors . '<h3 class="form__error-title">' . $error['title'] . '</h3>
+                <p class="form__error-desc">' . $error['description'] . '</p>';
+    }
+
+    return '<button class="form__error-button button" type="button">!<span class="visually-hidden">Информация об ошибке</span></button>
+        <div class="form__error-text">' . $errors . '</div>';
+}
+
+/**
+ * Вспомогательная функция для сохранения фото в папку uploads со стороннего ресурса
+ * @param string $photo_link   Ссылка на фотографию на стороннем ресурсе
+ *
+ * @return  string      Ссылка на фото в папке uploads
+ */
+function save_photo_from_url (string $photo_link): string {
+    $image = file_get_contents($photo_link);
+
+    $file_name = basename($photo_link);
+    $file_path = '/uploads/' . $file_name;
+
+    file_put_contents($file_path, $image);
+
+    // @todo понять почему картинки не грузятся куда надо и не генерируется нормальный url
+    return $file_path;
+}
+
+/**
+ * Вспомогательная функция для сохранения фото в папку uploads
+ * @param array $photo   ассоциативный массив с фото
+ *
+ * @return  string      Ссылка на фото в папке uploads
+ */
+function save_photo (array $photo): string {
+    $tmp_name = $photo['tmp_name'];
+    $file_name = basename($tmp_name);
+    $file_path = __DIR__ . '/uploads/';
+
+    move_uploaded_file($tmp_name, $file_path . $file_name);
+
+    // @todo понять почему картинки не грузятся куда надо и не генерируется нормальный url
+    return $file_path . $file_name;
 }
